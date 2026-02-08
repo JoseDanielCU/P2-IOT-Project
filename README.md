@@ -62,7 +62,7 @@ Se propone una plataforma web que permita:
 El sistema se divide en 3 componentes principales:
 
 1. **Frontend Web (UI/UX)**
-2. **Backend/API **
+2. **Backend/API**
 3. **Módulo de Predicción (ML)**
 
 ## Tecnologias
