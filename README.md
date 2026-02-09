@@ -33,7 +33,9 @@ Full documentation is available in the repository Wiki, including:
 - Competitor analysis
 
 ---
-
+## Installation and Setup
+Soon
+---
 ## Authors
 - Jose Daniel Castañeda  
 - Martin Caballero  
