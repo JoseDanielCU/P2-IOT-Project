@@ -19,7 +19,7 @@ Additionally, the system includes a forecasting module that predicts future ener
 - Frontend: React / Next.js, TailwindCSS, WebSockets, Chart.js  
 - Backend: Node.js (Express) or Python FastAPI, REST API, JWT Auth  
 - Database: PostgreSQL  
-- Forecasting: Python, Pandas, NumPy, ChatGPT agent 
+- Forecasting: Python, Pandas, NumPy, AI agent 
 - Deployment: Docker  
 
 ---
