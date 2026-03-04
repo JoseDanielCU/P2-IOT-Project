@@ -6,10 +6,13 @@ venv/
 
 # Python
 __pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
 *.egg-info/
+*.py[cod]
+*$py.class
 
 # Variables de entorno
 .env
