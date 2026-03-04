@@ -30,3 +30,7 @@ out/
 # OS
 .DS_Store
 Thumbs.db
+
+# Docker
+.docker/
+docker-compose.override.yml

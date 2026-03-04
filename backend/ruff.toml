@@ -1,0 +1,69 @@
+# Ruff Configuration - P2-IOT-Project
+# Documentación: https://docs.astral.sh/ruff/
+
+# Python version target
+target-version = "py312"
+
+# Line length (PEP 8 recomienda 79, pero 88 es estándar moderno)
+line-length = 88
+
+# Directorios a excluir
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.pyc",
+    ".pytest_cache",
+    "build",
+    "dist",
+]
+
+[lint]
+# Reglas a activar
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort (import sorting)
+    "N",     # pep8-naming (enforce naming conventions)
+    "UP",    # pyupgrade (modernize Python code)
+    "B",     # flake8-bugbear (find likely bugs)
+    "C4",    # flake8-comprehensions
+    "SIM",   # flake8-simplify
+    "RET",   # flake8-return
+    "ARG",   # flake8-unused-arguments
+]
+
+# Reglas a ignorar específicamente
+ignore = [
+    "E501",  # line-too-long (Ruff formatter lo maneja)
+    "B008",  # function-call-in-default-argument (común en FastAPI Depends)
+    "ARG001", # unused-function-argument (común en FastAPI dependency injection)
+    "RET504", # unnecessary-assign (preferencia de estilo)
+]
+
+# Permitir autofix para estas reglas
+fixable = ["ALL"]
+unfixable = []
+
+[lint.per-file-ignores]
+# Permitir imports no usados en __init__.py
+"__init__.py" = ["F401", "F403"]
+
+[lint.isort]
+# Configuración de ordenamiento de imports
+known-first-party = ["app"]
+force-single-line = false
+lines-after-imports = 2
+
+[lint.pep8-naming]
+# Enforce naming conventions
+classmethod-decorators = ["classmethod"]
+
+[format]
+# Configuración de autoformateo
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
