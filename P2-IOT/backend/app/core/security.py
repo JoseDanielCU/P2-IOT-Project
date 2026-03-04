@@ -1,10 +1,7 @@
 from passlib.context import CryptContext
-from jose import JWTError, jwt
-from datetime import datetime, timedelta
-
-SECRET_KEY = "supersecretkey"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+from jose import jwt
+from datetime import datetime
+from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRATION
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -16,6 +13,6 @@ def verify_password(plain_password, hashed_password):
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + ACCESS_TOKEN_EXPIRATION
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

@@ -1,16 +1,29 @@
 # Entorno virtual
 venv/
-backend/venv/
+.venv/
+**/venv/
+**/.venv/
 
 # Python
 __pycache__/
 *.pyc
-
-# Base de datos
-*.db
+*.pyo
+*.pyd
+*.egg-info/
 
 # Variables de entorno
 .env
+.env.local
 
 # VSCode
 .vscode/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
