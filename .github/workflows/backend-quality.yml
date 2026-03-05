@@ -3,13 +3,8 @@ name: Backend Code Quality
 on:
   pull_request:
     branches: [main]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-quality.yml'
   push:
     branches: [main]
-    paths:
-      - 'backend/**'
 
 jobs:
   lint-and-format:

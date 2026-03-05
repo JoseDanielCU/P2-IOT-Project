@@ -25,7 +25,7 @@
 <!-- Mark completed items with X -->
 - [ ] Code follows project naming conventions
 - [ ] Backend: Ran `ruff check app/` and `ruff format app/` (if applicable)
-- [ ] Frontend: Ran `npm run lint` and `npm run format` (if applicable)
+- [ ] Frontend: Ran `npm run format` (if applicable)
 - [ ] Tested locally and works as expected
 - [ ] No console errors or warnings
 - [ ] Related documentation updated (if needed)
