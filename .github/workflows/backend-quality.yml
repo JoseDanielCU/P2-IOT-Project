@@ -1,2 +1,43 @@
-push:
+name: Backend Code Quality
+
+on:
+  pull_request:
     branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-format:
+    name: Ruff Linting & Formatting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      
+      - name: Run Ruff linting
+        working-directory: ./backend
+        run: ruff check app/
+      
+      - name: Run Ruff formatting check
+        working-directory: ./backend
+        run: ruff format --check app/
