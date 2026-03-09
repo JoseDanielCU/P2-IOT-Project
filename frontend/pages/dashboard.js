@@ -122,7 +122,7 @@ function DashboardPage() {
                                 Producción vs Consumo
                             </h2>
                             <div className="flex items-center gap-4">
-                                <select className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                <select className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                                     <option>Últimos 7 Días</option>
                                     <option>Últimos 30 Días</option>
                                     <option>Este Año</option>

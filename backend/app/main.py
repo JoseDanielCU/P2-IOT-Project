@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth import router as auth_router
+from app.auth.routers.user_router import router as user_router
+
 from app.core.config import CORS_CREDENTIALS, CORS_HEADERS, CORS_METHODS, CORS_ORIGINS
 from app.core.database import Base, engine
-
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,3 +20,4 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(user_router)

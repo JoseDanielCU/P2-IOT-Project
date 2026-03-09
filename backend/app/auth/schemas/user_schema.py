@@ -74,3 +74,16 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+
+class UserUpdate(BaseModel):
+    full_name: str
+    email: EmailStr
+    user_type: UserType
+    household_name: str
+    address: str
+    city: str
+    phone_number: str | None
+
+
