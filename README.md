@@ -22,7 +22,7 @@ Additionally, the system includes a forecasting module that predicts future ener
 - Forecasting: Python, Pandas, NumPy, AI agent 
 - Deployment: Docker, Docker Compose  
 - CI/CD: GitHub Actions
-- Code Quality: Ruff (Python), ESLint + Prettier (JavaScript)
+- Code Quality: Ruff (Python), Prettier (JavaScript)
 
 ---
 
@@ -68,7 +68,7 @@ This project uses **GitHub Flow** for collaboration. The `main` branch is protec
 
 ### Code Quality:
 - **Backend**: Run `ruff check app/` and `ruff format app/` before committing
-- **Frontend**: Run `npm run lint` and `npm run format` before committing
+- **Frontend**: Run `npm run format` before committing
 
 ### Security Scanning:
 - **Backend**: Run `bandit -r app/` to detect security vulnerabilities
@@ -79,7 +79,7 @@ This project uses **GitHub Flow** for collaboration. The `main` branch is protec
 
 ## Installation and Setup
 
-### 🐳 Quick Start with Docker (Recommended)
+### Quick Start with Docker (Recommended)
 
 #### For Daily Development (Hot-Reload)
 Use this when developing features - your code changes update automatically:
@@ -88,13 +88,16 @@ Use this when developing features - your code changes update automatically:
 # Start all services with hot-reload enabled
 docker-compose -f docker-compose.dev.yml up
 
+# Rebuild when you change package.json, requirements.txt, or Dockerfile
+docker-compose -f docker-compose.dev.yml up --build
+
+# Stop all services
+docker-compose -f docker-compose.dev.yml down
+
 # Access the application:
 # Frontend: http://localhost:3000
 # Backend API: http://localhost:8000
 # API Docs: http://localhost:8000/docs
-
-# Stop all services
-docker-compose -f docker-compose.dev.yml down
 ```
 
 #### For Final Deployment (Production Build)
@@ -109,12 +112,12 @@ docker-compose down -v
 ```
 
 **What's included:**
-- ✅ PostgreSQL database (automatically configured)
-- ✅ FastAPI backend (with hot-reload in dev mode)
-- ✅ Next.js frontend (with hot-reload in dev mode)
-- ✅ All services communicate automatically
+- PostgreSQL database (automatically configured)
+- FastAPI backend (with hot-reload in dev mode)
+- Next.js frontend (with hot-reload in dev mode)
+- All services communicate automatically
 
-### 💻 Local Development Setup
+### Local Development Setup
 
 #### Backend (FastAPI)
 ```bash
@@ -167,7 +170,7 @@ docker run -d \
   postgres:16-alpine
 ```
 
-### 🧪 Running Tests
+### Running Tests
 
 ```bash
 # Backend linting and formatting
@@ -176,9 +179,8 @@ ruff check app/
 ruff format app/
 bandit -r app/
 
-# Frontend linting and formatting
+# Frontend formatting and security
 cd frontend
-npm run lint
 npm run format
 npm audit
 ```
