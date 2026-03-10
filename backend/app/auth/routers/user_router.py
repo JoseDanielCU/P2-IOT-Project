@@ -27,7 +27,7 @@ def get_my_profile(current_user=Depends(get_current_user)):
 def update_my_profile(
     user_data: UserUpdate,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     updated_user = update_user(db, current_user.id, user_data)
 

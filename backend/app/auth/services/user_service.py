@@ -34,6 +34,7 @@ def create_user(db: Session, user_data: UserCreate):
 
     return user
 
+
 def update_user(db, user_id, user_data):
     user = db.query(User).filter(User.id == user_id).first()
 

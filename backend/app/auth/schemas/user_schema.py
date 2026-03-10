@@ -76,7 +76,6 @@ class Token(BaseModel):
     token_type: str
 
 
-
 class UserUpdate(BaseModel):
     full_name: str
     email: EmailStr
@@ -85,5 +84,3 @@ class UserUpdate(BaseModel):
     address: str
     city: str
     phone_number: str | None
-
-
