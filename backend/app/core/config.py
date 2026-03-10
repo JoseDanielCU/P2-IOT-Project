@@ -10,7 +10,7 @@ from datetime import timedelta
 # Database Configuration
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg://postgres:password@localhost:5432/energy_community",
+    "postgresql+psycopg://postgres:12345678@localhost:5432/energy_community",
 )
 
 # Security Configuration

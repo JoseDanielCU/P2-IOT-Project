@@ -33,3 +33,18 @@ def create_user(db: Session, user_data: UserCreate):
     db.refresh(user)
 
     return user
+
+
+def update_user(db, user_id, user_data):
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        return None
+
+    user.full_name = user_data.full_name
+    user.email = user_data.email
+
+    db.commit()
+    db.refresh(user)
+
+    return user
