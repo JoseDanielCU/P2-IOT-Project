@@ -5,13 +5,14 @@ Generates realistic daily data for the past 30 days for each user.
 ejecutar con docker:
 docker-compose -f docker-compose.dev.yml exec backend python /app/app/scripts/populate_energy_data.py
 """
+
 import random
 import sys
 from datetime import datetime, timedelta
 
 
 # Add parent directory to path
-sys.path.insert(0, '/app')
+sys.path.insert(0, "/app")
 
 from app.auth.models import User
 from app.core.database import SessionLocal
@@ -42,9 +43,9 @@ def generate_energy_data():
             print(f"\n👤 User: {user.email} (ID: {user.id})")
 
             # Check if user already has data
-            existing_count = db.query(EnergyData).filter(
-                EnergyData.user_id == user.id
-            ).count()
+            existing_count = (
+                db.query(EnergyData).filter(EnergyData.user_id == user.id).count()
+            )
 
             if existing_count > 0:
                 print(f"   ⏭️  Skipping - already has {existing_count} records")
@@ -60,7 +61,9 @@ def generate_energy_data():
                 # Evening peak: 6-9 PM (low production, high consumption)
 
                 for hour in range(24):
-                    timestamp = datetime.combine(current_date, datetime.min.time()).replace(hour=hour)
+                    timestamp = datetime.combine(
+                        current_date, datetime.min.time()
+                    ).replace(hour=hour)
 
                     if 6 <= hour < 9:  # Morning
                         produced = random.uniform(8.0, 12.0)
@@ -83,11 +86,11 @@ def generate_energy_data():
                     consumed *= random.uniform(0.8, 1.2)
 
                     # Generate data based on user's primary role
-                    if user.primary_role.value == 'producer':
+                    if user.primary_role.value == "producer":
                         # Producer: only generation data
                         final_produced = round(max(0, produced), 2)
                         final_consumed = 0.0
-                    elif user.primary_role.value == 'consumer':
+                    elif user.primary_role.value == "consumer":
                         # Consumer: only consumption data
                         final_produced = 0.0
                         final_consumed = round(max(0, consumed), 2)

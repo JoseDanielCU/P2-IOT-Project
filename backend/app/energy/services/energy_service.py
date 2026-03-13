@@ -29,7 +29,7 @@ def get_daily_metrics(db: Session, user_id: int, target_date: date = None):
         db.query(EnergyData)
         .filter(
             EnergyData.user_id == user_id,
-            func.date(EnergyData.timestamp) == target_date
+            func.date(EnergyData.timestamp) == target_date,
         )
         .first()
     )
@@ -52,7 +52,9 @@ def get_daily_metrics(db: Session, user_id: int, target_date: date = None):
 
 def get_chart_data(db: Session, user_id: int, days: int = 7):
     """Obtiene datos de producción vs consumo para los últimos N días"""
-    start_date = datetime.combine(date.today() - timedelta(days=days - 1), datetime.min.time())
+    start_date = datetime.combine(
+        date.today() - timedelta(days=days - 1), datetime.min.time()
+    )
     end_date = datetime.combine(date.today(), datetime.max.time())
 
     energy_records = (
