@@ -1,11 +1,19 @@
 import { API_BASE_URL } from '../utils/constants';
 
 export async function apiRequest(endpoint, options = {}) {
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+    };
+
+    // Add authorization token if available
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const requestConfig = {
-        headers: {
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
+        headers,
         ...options,
     };
 

@@ -28,7 +28,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     new_user = create_user(db, user)
 
-    token = create_access_token({"sub": new_user.email})
+    token = create_access_token({"sub": str(new_user.id)})
 
     return {"access_token": token, "token_type": "bearer"}
 
