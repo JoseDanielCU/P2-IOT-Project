@@ -28,6 +28,7 @@ def get_today_metrics(
 ):
     """Obtiene los totales de energía del día actual"""
     metrics = energy_service.get_daily_metrics(db, current_user.id)
+    metrics['user_role'] = current_user.primary_role.value
     return DailyMetricsResponse(**metrics)
 
 
@@ -39,6 +40,7 @@ def get_date_metrics(
 ):
     """Obtiene los totales de energía para una fecha específica"""
     metrics = energy_service.get_daily_metrics(db, current_user.id, target_date)
+    metrics['user_role'] = current_user.primary_role.value
     return DailyMetricsResponse(**metrics)
 
 
@@ -62,7 +64,12 @@ def get_chart_data(
         net_balance_kwh=net_balance,
     )
 
-    return ChartDataResponse(metrics=metrics, chart_data=chart_data)
+    return ChartDataResponse(
+        metrics=metrics, 
+        chart_data=chart_data,
+        user_role=current_user.primary_role.value,
+        energy_source_type=current_user.energy_source_type.value if current_user.energy_source_type else None
+    )
 
 
 @router.post("/record")

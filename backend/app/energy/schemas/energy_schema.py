@@ -24,6 +24,7 @@ class DailyMetricsResponse(BaseModel):
     total_produced_kwh: float
     total_consumed_kwh: float
     net_balance_kwh: float
+    user_role: str | None = None
 
 
 class ChartDataPoint(BaseModel):
@@ -35,3 +36,5 @@ class ChartDataPoint(BaseModel):
 class ChartDataResponse(BaseModel):
     metrics: DailyMetricsResponse
     chart_data: list[ChartDataPoint]
+    user_role: str
+    energy_source_type: str | None = None

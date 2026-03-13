@@ -81,11 +81,25 @@ def generate_energy_data():
                     produced *= random.uniform(0.8, 1.2)
                     consumed *= random.uniform(0.8, 1.2)
                     
+                    # Generate data based on user's primary role
+                    if user.primary_role.value == 'producer':
+                        # Producer: only generation data
+                        final_produced = round(max(0, produced), 2)
+                        final_consumed = 0.0
+                    elif user.primary_role.value == 'consumer':
+                        # Consumer: only consumption data
+                        final_produced = 0.0
+                        final_consumed = round(max(0, consumed), 2)
+                    else:  # prosumer
+                        # Prosumer: both generation and consumption
+                        final_produced = round(max(0, produced), 2)
+                        final_consumed = round(max(0, consumed), 2)
+                    
                     energy_record = EnergyData(
                         user_id=user.id,
                         timestamp=timestamp,
-                        energy_produced_kwh=round(max(0, produced), 2),
-                        energy_consumed_kwh=round(max(0, consumed), 2),
+                        energy_produced_kwh=final_produced,
+                        energy_consumed_kwh=final_consumed,
                     )
                     db.add(energy_record)
                     user_records += 1
