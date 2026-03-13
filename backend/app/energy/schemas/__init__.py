@@ -5,6 +5,7 @@ from app.energy.schemas.energy_schema import (
     EnergyDataResponse,
 )
 
+
 __all__ = [
     "EnergyDataCreate",
     "EnergyDataResponse",

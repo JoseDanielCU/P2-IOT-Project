@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from 'recharts';
 import { Navbar } from '../src/components/Layout';
 import { apiRequest } from '../src/services/api';
 
@@ -19,7 +28,7 @@ function DashboardPage() {
     const [days, setDays] = useState(7);
     const [error, setError] = useState(null);
 
-    const getTimePeriodLabel = (daysValue) => {
+    const getTimePeriodLabel = daysValue => {
         switch (daysValue) {
             case 7:
                 return 'de la semana';
@@ -39,15 +48,15 @@ function DashboardPage() {
             router.push('/login');
             return;
         }
-        
+
         // Cargar datos de energía
         const fetchEnergyData = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                
+
                 const response = await apiRequest(`/api/energy/chart?days=${days}`);
-                
+
                 if (response.user_role) {
                     setUserRole(response.user_role);
                 }
@@ -93,10 +102,13 @@ function DashboardPage() {
                 chartData,
                 exportedAt: new Date().toLocaleString(),
             };
-            
+
             const dataStr = JSON.stringify(dataToExport, null, 2);
             const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr));
+            element.setAttribute(
+                'href',
+                'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr)
+            );
             element.setAttribute('download', `energy-data-${days}days.json`);
             element.style.display = 'none';
             document.body.appendChild(element);
@@ -127,17 +139,21 @@ function DashboardPage() {
                 <main className="max-w-7xl mx-auto px-6 py-8">
                     {error && (
                         <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm">
-                            <p className="font-semibold">Nota: Mostrando datos de ejemplo</p>
+                            <p className="font-semibold">
+                                Nota: Mostrando datos de ejemplo
+                            </p>
                             <p>{error}</p>
                         </div>
                     )}
 
                     {/* Métricas superiores */}
-                    <div className={`grid gap-6 mb-8 ${
-                        userRole === 'prosumer' 
-                            ? 'grid-cols-1 md:grid-cols-3' 
-                            : 'grid-cols-1 md:grid-cols-2'
-                    }`}>
+                    <div
+                        className={`grid gap-6 mb-8 ${
+                            userRole === 'prosumer'
+                                ? 'grid-cols-1 md:grid-cols-3'
+                                : 'grid-cols-1 md:grid-cols-2'
+                        }`}
+                    >
                         {/* Energía Producida - Se muestra para producer y prosumer */}
                         {(userRole === 'producer' || userRole === 'prosumer') && (
                             <div className="bg-gradient-to-br from-lime-400 to-lime-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition">
@@ -148,11 +164,19 @@ function DashboardPage() {
                                         </p>
                                         {energySourceType && (
                                             <p className="text-xs font-semibold opacity-75 mt-1 capitalize">
-                                                Fuente: {energySourceType === 'solar' ? '☀️ Solar' : energySourceType === 'wind' ? '💨 Eólica' : energySourceType === 'battery' ? '🔋 Batería' : energySourceType}
+                                                Fuente:{' '}
+                                                {energySourceType === 'solar'
+                                                    ? '☀️ Solar'
+                                                    : energySourceType === 'wind'
+                                                      ? '💨 Eólica'
+                                                      : energySourceType === 'battery'
+                                                        ? '🔋 Batería'
+                                                        : energySourceType}
                                             </p>
                                         )}
                                         <p className="text-4xl font-bold mt-2">
-                                            {metrics.total_produced_kwh.toFixed(1)} <span className="text-2xl">kWh</span>
+                                            {metrics.total_produced_kwh.toFixed(1)}{' '}
+                                            <span className="text-2xl">kWh</span>
                                         </p>
                                     </div>
                                     <div className="bg-white/20 p-3 rounded-xl">
@@ -177,7 +201,8 @@ function DashboardPage() {
                                             Energía Consumida {getTimePeriodLabel(days)}
                                         </p>
                                         <p className="text-4xl font-bold mt-2">
-                                            {metrics.total_consumed_kwh.toFixed(1)} <span className="text-2xl">kWh</span>
+                                            {metrics.total_consumed_kwh.toFixed(1)}{' '}
+                                            <span className="text-2xl">kWh</span>
                                         </p>
                                     </div>
                                     <div className="bg-white/20 p-3 rounded-xl">
@@ -199,18 +224,22 @@ function DashboardPage() {
 
                         {/* Balance Neto - Se muestra solo para prosumer */}
                         {userRole === 'prosumer' && (
-                            <div className={`bg-gradient-to-br rounded-2xl p-6 text-slate-800 shadow-lg hover:shadow-xl transition ${
-                                metrics.net_balance_kwh >= 0
-                                    ? 'from-lime-300 to-lime-400'
-                                    : 'from-orange-300 to-orange-400'
-                            }`}>
+                            <div
+                                className={`bg-gradient-to-br rounded-2xl p-6 text-slate-800 shadow-lg hover:shadow-xl transition ${
+                                    metrics.net_balance_kwh >= 0
+                                        ? 'from-lime-300 to-lime-400'
+                                        : 'from-orange-300 to-orange-400'
+                                }`}
+                            >
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
                                         <p className="text-sm font-semibold opacity-90">
                                             Balance Neto
                                         </p>
                                         <p className="text-4xl font-bold mt-2">
-                                            {metrics.net_balance_kwh >= 0 ? '+' : ''}{metrics.net_balance_kwh.toFixed(1)} <span className="text-2xl">kWh</span>
+                                            {metrics.net_balance_kwh >= 0 ? '+' : ''}
+                                            {metrics.net_balance_kwh.toFixed(1)}{' '}
+                                            <span className="text-2xl">kWh</span>
                                         </p>
                                     </div>
                                     <div className="bg-white/40 p-3 rounded-xl">
@@ -240,16 +269,16 @@ function DashboardPage() {
                                 {userRole === 'prosumer' && 'Producción vs Consumo'}
                             </h2>
                             <div className="flex items-center gap-4 flex-wrap">
-                                <select 
+                                <select
                                     className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                     value={days}
-                                    onChange={(e) => setDays(parseInt(e.target.value))}
+                                    onChange={e => setDays(parseInt(e.target.value))}
                                 >
                                     <option value={7}>Últimos 7 Días</option>
                                     <option value={14}>Últimos 14 Días</option>
                                     <option value={30}>Últimos 30 Días</option>
                                 </select>
-                                <button 
+                                <button
                                     onClick={handleExport}
                                     className="px-4 py-2 bg-cyan-500 text-white rounded-lg text-sm font-medium hover:bg-cyan-600 transition"
                                 >
@@ -262,35 +291,50 @@ function DashboardPage() {
                         {chartData.length > 0 ? (
                             <div className="w-full h-80 bg-slate-50 rounded-xl p-4">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                    <LineChart
+                                        data={chartData}
+                                        margin={{
+                                            top: 5,
+                                            right: 30,
+                                            left: 0,
+                                            bottom: 5,
+                                        }}
+                                    >
+                                        <CartesianGrid
+                                            strokeDasharray="3 3"
+                                            stroke="#e2e8f0"
+                                        />
                                         <XAxis dataKey="date" stroke="#64748b" />
                                         <YAxis stroke="#64748b" />
-                                        <Tooltip 
-                                            contentStyle={{ 
+                                        <Tooltip
+                                            contentStyle={{
                                                 backgroundColor: '#f8fafc',
                                                 border: '1px solid #e2e8f0',
-                                                borderRadius: '8px'
+                                                borderRadius: '8px',
                                             }}
-                                            formatter={(value) => `${value.toFixed(2)} kWh`}
+                                            formatter={value =>
+                                                `${value.toFixed(2)} kWh`
+                                            }
                                         />
                                         <Legend />
-                                        {(userRole === 'producer' || userRole === 'prosumer') && (
-                                            <Line 
-                                                type="monotone" 
-                                                dataKey="produced" 
-                                                stroke="#84cc16" 
+                                        {(userRole === 'producer' ||
+                                            userRole === 'prosumer') && (
+                                            <Line
+                                                type="monotone"
+                                                dataKey="produced"
+                                                stroke="#84cc16"
                                                 strokeWidth={2}
                                                 dot={{ fill: '#84cc16', r: 4 }}
                                                 activeDot={{ r: 6 }}
                                                 name="Producción"
                                             />
                                         )}
-                                        {(userRole === 'consumer' || userRole === 'prosumer') && (
-                                            <Line 
-                                                type="monotone" 
-                                                dataKey="consumed" 
-                                                stroke="#06b6d4" 
+                                        {(userRole === 'consumer' ||
+                                            userRole === 'prosumer') && (
+                                            <Line
+                                                type="monotone"
+                                                dataKey="consumed"
+                                                stroke="#06b6d4"
                                                 strokeWidth={2}
                                                 dot={{ fill: '#06b6d4', r: 4 }}
                                                 activeDot={{ r: 6 }}

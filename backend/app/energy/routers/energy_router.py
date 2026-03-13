@@ -1,12 +1,16 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_user
 from app.auth.models import User
 from app.core.database import SessionLocal
-from app.energy.schemas import EnergyDataResponse, DailyMetricsResponse, EnergyDataCreate, ChartDataResponse
+from app.energy.schemas import (
+    ChartDataResponse,
+    DailyMetricsResponse,
+    EnergyDataCreate,
+)
 from app.energy.services import energy_service
 
 
@@ -65,7 +69,7 @@ def get_chart_data(
     )
 
     return ChartDataResponse(
-        metrics=metrics, 
+        metrics=metrics,
         chart_data=chart_data,
         user_role=current_user.primary_role.value,
         energy_source_type=current_user.energy_source_type.value if current_user.energy_source_type else None
