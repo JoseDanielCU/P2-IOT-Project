@@ -20,6 +20,42 @@ def create_energy_data(db: Session, user_id: int, energy_data: EnergyDataCreate)
     return db_energy
 
 
+def upsert_energy_data(db: Session, user_id: int, records: list[dict]) -> int:
+    """Insert or update energy records from an imported file.
+
+    Each record must have keys: date (datetime.date), produced (float), consumed (float).
+    Returns the number of records processed.
+    """
+    count = 0
+    for record in records:
+        target_date = record["date"]
+        existing = (
+            db.query(EnergyData)
+            .filter(
+                EnergyData.user_id == user_id,
+                func.date(EnergyData.timestamp) == target_date,
+            )
+            .first()
+        )
+        if existing:
+            existing.energy_produced_kwh = record["produced"]
+            existing.energy_consumed_kwh = record["consumed"]
+        else:
+            db.add(
+                EnergyData(
+                    user_id=user_id,
+                    timestamp=datetime(
+                        target_date.year, target_date.month, target_date.day
+                    ),
+                    energy_produced_kwh=record["produced"],
+                    energy_consumed_kwh=record["consumed"],
+                )
+            )
+        count += 1
+    db.commit()
+    return count
+
+
 def get_daily_metrics(db: Session, user_id: int, target_date: date = None):
     """Obtiene los totales de energía para un día específico (hoy por defecto)"""
     if target_date is None:
