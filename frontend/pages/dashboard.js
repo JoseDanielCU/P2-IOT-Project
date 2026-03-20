@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import {
+    BarChart,
+    Bar,
     LineChart,
     Line,
     XAxis,
@@ -12,7 +14,7 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 import { Navbar } from '../src/components/Layout';
-import { apiRequest } from '../src/services/api';
+import { apiRequest, uploadFile } from '../src/services/api';
 
 function DashboardPage() {
     const router = useRouter();
@@ -27,6 +29,11 @@ function DashboardPage() {
     const [chartData, setChartData] = useState([]);
     const [days, setDays] = useState(7);
     const [error, setError] = useState(null);
+    const [chartType, setChartType] = useState('line');
+    const [isImporting, setIsImporting] = useState(false);
+    const [importFeedback, setImportFeedback] = useState(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const fileInputRef = useRef(null);
 
     const getTimePeriodLabel = daysValue => {
         switch (daysValue) {
@@ -93,7 +100,7 @@ function DashboardPage() {
         };
 
         fetchEnergyData();
-    }, [router, days]);
+    }, [router, days, refreshTrigger]);
 
     const handleExport = async () => {
         try {
@@ -116,6 +123,24 @@ function DashboardPage() {
             document.body.removeChild(element);
         } catch (err) {
             console.error('Error exporting data:', err);
+        }
+    };
+
+    const handleImport = async e => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        e.target.value = '';
+        setIsImporting(true);
+        setImportFeedback(null);
+        try {
+            const result = await uploadFile('/api/energy/import', file);
+            setImportFeedback({ type: 'success', message: result.message });
+            setRefreshTrigger(t => t + 1);
+        } catch (err) {
+            setImportFeedback({ type: 'error', message: err.message });
+        } finally {
+            setIsImporting(false);
+            setTimeout(() => setImportFeedback(null), 6000);
         }
     };
 
@@ -268,7 +293,67 @@ function DashboardPage() {
                                 {userRole === 'consumer' && 'Consumo de Energía'}
                                 {userRole === 'prosumer' && 'Producción vs Consumo'}
                             </h2>
-                            <div className="flex items-center gap-4 flex-wrap">
+                            <div className="flex items-center gap-3 flex-wrap">
+                                {/* Chart type switcher */}
+                                <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                                    <button
+                                        onClick={() => setChartType('line')}
+                                        title="Gráfico de líneas"
+                                        className={`p-1.5 rounded-md transition ${
+                                            chartType === 'line'
+                                                ? 'bg-white shadow text-cyan-600'
+                                                : 'text-slate-400 hover:text-slate-600'
+                                        }`}
+                                    >
+                                        <svg
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <polyline points="22 12 18 12 15 18 9 6 6 12 2 12" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        onClick={() => setChartType('bar')}
+                                        title="Gráfico de barras"
+                                        className={`p-1.5 rounded-md transition ${
+                                            chartType === 'bar'
+                                                ? 'bg-white shadow text-cyan-600'
+                                                : 'text-slate-400 hover:text-slate-600'
+                                        }`}
+                                    >
+                                        <svg
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                        >
+                                            <rect
+                                                x="2"
+                                                y="10"
+                                                width="4"
+                                                height="12"
+                                                rx="1"
+                                            />
+                                            <rect
+                                                x="10"
+                                                y="6"
+                                                width="4"
+                                                height="16"
+                                                rx="1"
+                                            />
+                                            <rect
+                                                x="18"
+                                                y="3"
+                                                width="4"
+                                                height="19"
+                                                rx="1"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+
                                 <select
                                     className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                     value={days}
@@ -278,6 +363,23 @@ function DashboardPage() {
                                     <option value={14}>Últimos 14 Días</option>
                                     <option value={30}>Últimos 30 Días</option>
                                 </select>
+
+                                {/* Import */}
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept=".csv,.xlsx,.json,.txt"
+                                    onChange={handleImport}
+                                    className="hidden"
+                                />
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isImporting}
+                                    className="px-4 py-2 bg-lime-500 text-white rounded-lg text-sm font-medium hover:bg-lime-600 transition disabled:opacity-50"
+                                >
+                                    {isImporting ? 'Importando…' : 'Importar Datos'}
+                                </button>
+
                                 <button
                                     onClick={handleExport}
                                     className="px-4 py-2 bg-cyan-500 text-white rounded-lg text-sm font-medium hover:bg-cyan-600 transition"
@@ -287,61 +389,122 @@ function DashboardPage() {
                             </div>
                         </div>
 
+                        {/* Import feedback banner */}
+                        {importFeedback && (
+                            <div
+                                className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${
+                                    importFeedback.type === 'success'
+                                        ? 'bg-lime-50 border border-lime-200 text-lime-800'
+                                        : 'bg-red-50 border border-red-200 text-red-800'
+                                }`}
+                            >
+                                {importFeedback.message}
+                            </div>
+                        )}
+
                         {/* Gráfica */}
                         {chartData.length > 0 ? (
                             <div className="w-full h-80 bg-slate-50 rounded-xl p-4">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart
-                                        data={chartData}
-                                        margin={{
-                                            top: 5,
-                                            right: 30,
-                                            left: 0,
-                                            bottom: 5,
-                                        }}
-                                    >
-                                        <CartesianGrid
-                                            strokeDasharray="3 3"
-                                            stroke="#e2e8f0"
-                                        />
-                                        <XAxis dataKey="date" stroke="#64748b" />
-                                        <YAxis stroke="#64748b" />
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: '#f8fafc',
-                                                border: '1px solid #e2e8f0',
-                                                borderRadius: '8px',
+                                    {chartType === 'bar' ? (
+                                        <BarChart
+                                            data={chartData}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 5,
                                             }}
-                                            formatter={value =>
-                                                `${value.toFixed(2)} kWh`
-                                            }
-                                        />
-                                        <Legend />
-                                        {(userRole === 'producer' ||
-                                            userRole === 'prosumer') && (
-                                            <Line
-                                                type="monotone"
-                                                dataKey="produced"
-                                                stroke="#84cc16"
-                                                strokeWidth={2}
-                                                dot={{ fill: '#84cc16', r: 4 }}
-                                                activeDot={{ r: 6 }}
-                                                name="Producción"
+                                        >
+                                            <CartesianGrid
+                                                strokeDasharray="3 3"
+                                                stroke="#e2e8f0"
                                             />
-                                        )}
-                                        {(userRole === 'consumer' ||
-                                            userRole === 'prosumer') && (
-                                            <Line
-                                                type="monotone"
-                                                dataKey="consumed"
-                                                stroke="#06b6d4"
-                                                strokeWidth={2}
-                                                dot={{ fill: '#06b6d4', r: 4 }}
-                                                activeDot={{ r: 6 }}
-                                                name="Consumo"
+                                            <XAxis dataKey="date" stroke="#64748b" />
+                                            <YAxis stroke="#64748b" />
+                                            <Tooltip
+                                                contentStyle={{
+                                                    backgroundColor: '#f8fafc',
+                                                    border: '1px solid #e2e8f0',
+                                                    borderRadius: '8px',
+                                                }}
+                                                formatter={value =>
+                                                    `${value.toFixed(2)} kWh`
+                                                }
                                             />
-                                        )}
-                                    </LineChart>
+                                            <Legend />
+                                            {(userRole === 'producer' ||
+                                                userRole === 'prosumer') && (
+                                                <Bar
+                                                    dataKey="produced"
+                                                    fill="#84cc16"
+                                                    name="Producción"
+                                                    radius={[4, 4, 0, 0]}
+                                                />
+                                            )}
+                                            {(userRole === 'consumer' ||
+                                                userRole === 'prosumer') && (
+                                                <Bar
+                                                    dataKey="consumed"
+                                                    fill="#06b6d4"
+                                                    name="Consumo"
+                                                    radius={[4, 4, 0, 0]}
+                                                />
+                                            )}
+                                        </BarChart>
+                                    ) : (
+                                        <LineChart
+                                            data={chartData}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 5,
+                                            }}
+                                        >
+                                            <CartesianGrid
+                                                strokeDasharray="3 3"
+                                                stroke="#e2e8f0"
+                                            />
+                                            <XAxis dataKey="date" stroke="#64748b" />
+                                            <YAxis stroke="#64748b" />
+                                            <Tooltip
+                                                contentStyle={{
+                                                    backgroundColor: '#f8fafc',
+                                                    border: '1px solid #e2e8f0',
+                                                    borderRadius: '8px',
+                                                }}
+                                                formatter={value =>
+                                                    `${value.toFixed(2)} kWh`
+                                                }
+                                            />
+                                            <Legend />
+                                            {(userRole === 'producer' ||
+                                                userRole === 'prosumer') && (
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="produced"
+                                                    stroke="#84cc16"
+                                                    strokeWidth={2}
+                                                    dot={{ fill: '#84cc16', r: 4 }}
+                                                    activeDot={{ r: 6 }}
+                                                    name="Producción"
+                                                />
+                                            )}
+                                            {(userRole === 'consumer' ||
+                                                userRole === 'prosumer') && (
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="consumed"
+                                                    stroke="#06b6d4"
+                                                    strokeWidth={2}
+                                                    dot={{ fill: '#06b6d4', r: 4 }}
+                                                    activeDot={{ r: 6 }}
+                                                    name="Consumo"
+                                                />
+                                            )}
+                                        </LineChart>
+                                    )}
                                 </ResponsiveContainer>
                             </div>
                         ) : (
