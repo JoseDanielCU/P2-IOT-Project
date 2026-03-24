@@ -20,6 +20,14 @@ If you discover a security vulnerability in this project, please report it by cr
 
 No critical vulnerabilities detected as of March 4, 2026.
 
+### Backend Configuration (as of March 24, 2026)
+
+✅ **Security configuration hardening applied.**
+
+- **SECRET_KEY**: Now read from environment variable via `os.getenv()` — no longer hardcoded.
+- **CORS_ORIGINS**: Fixed wildcard `*` with `credentials=True` (violates CORS spec and OWASP A05 — Security Misconfiguration). Origins are now loaded from the `CORS_ORIGINS` environment variable.
+- **DATABASE_URL**: Default fallback uses generic credentials only for local development.
+
 ## Security Scanning
 
 This project uses automated security scanning:
