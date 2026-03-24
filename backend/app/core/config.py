@@ -16,7 +16,7 @@ DATABASE_URL = os.getenv(
 # Security Configuration
 SECRET_KEY = "supersecretkey"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
 # CORS Configuration
 CORS_ORIGINS = ["*"]

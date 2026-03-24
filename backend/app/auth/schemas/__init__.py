@@ -6,6 +6,7 @@ from app.auth.schemas.user_schema import (
     UserLogin,
     UserResponse,
     UserType,
+    UserUpdate,
 )
 
 
@@ -17,4 +18,5 @@ __all__ = [
     "UserType",
     "PrimaryRole",
     "EnergySourceType",
+    "UserUpdate",
 ]
