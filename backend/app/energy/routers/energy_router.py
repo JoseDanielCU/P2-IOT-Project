@@ -22,7 +22,31 @@ def get_db():
         db.close()
 
 
-router = APIRouter(prefix="/api/energy", tags=["energy"])
+router = APIRouter(prefix="/api/energy", tags=["Energy"])
+
+
+# Endpoint para gráficos comunitarios globales
+@router.get("/chart/global", response_model=list)
+def get_global_chart_data(
+    days: int = Query(7, ge=1, le=90, description="Número de días para mostrar"),
+    db: Session = Depends(get_db),
+):
+    """Obtiene datos agregados para gráfica de producción vs consumo de la comunidad."""
+    chart_data = energy_service.get_global_chart_data(db, days)
+    return chart_data
+
+
+# Endpoint para métricas globales de la comunidad
+@router.get("/metrics/global", response_model=dict)
+def get_global_metrics(
+    days: int = Query(
+        7, ge=1, le=90, description="Número de días para calcular métricas"
+    ),
+    db: Session = Depends(get_db),
+):
+    """Obtiene métricas agregadas de toda la comunidad (promedios y totales)."""
+    metrics = energy_service.get_global_metrics(db, days)
+    return metrics
 
 
 @router.get("/metrics/today", response_model=DailyMetricsResponse)
