@@ -8,7 +8,7 @@ If you discover a security vulnerability in this project, please report it by cr
 
 ### Frontend Dependencies (as of March 4, 2026)
 
-✅ **All critical and high severity vulnerabilities have been resolved!**
+**All critical and high severity vulnerabilities have been resolved!**
 
 **Latest Update**: All dependencies updated to secure versions on March 4, 2026
 - **Next.js**: Updated to 16.1.6 (no known vulnerabilities)
@@ -22,7 +22,7 @@ No critical vulnerabilities detected as of March 4, 2026.
 
 ### Backend Configuration (as of March 24, 2026)
 
-✅ **Security configuration hardening applied.**
+**Security configuration hardening applied.**
 
 - **SECRET_KEY**: Now read from environment variable via `os.getenv()` — no longer hardcoded.
 - **CORS_ORIGINS**: Fixed wildcard `*` with `credentials=True` (violates CORS spec and OWASP A05 — Security Misconfiguration). Origins are now loaded from the `CORS_ORIGINS` environment variable.
