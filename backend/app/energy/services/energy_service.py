@@ -19,9 +19,7 @@ def get_global_chart_data(db: Session, days: int = 7):
     # Importar User aquí para evitar dependencias circulares
     from app.auth.models.user import User
 
-    active_user_ids = [
-        u.id for u in db.query(User).filter(User.is_active).all()
-    ]
+    active_user_ids = [u.id for u in db.query(User).filter(User.is_active).all()]
     # Obtener todos los registros en el rango y solo de usuarios activos
     energy_records = (
         db.query(EnergyData)
@@ -75,9 +73,7 @@ def get_global_metrics(db: Session, days: int = 7):
     from app.auth.models.user import User
 
     # Obtener IDs de usuarios activos
-    active_user_ids = [
-        u.id for u in db.query(User).filter(User.is_active).all()
-    ]
+    active_user_ids = [u.id for u in db.query(User).filter(User.is_active).all()]
     # Filtrar por el rango de días y solo usuarios activos
     energy_records = (
         db.query(EnergyData)
