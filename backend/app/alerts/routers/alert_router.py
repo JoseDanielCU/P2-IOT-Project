@@ -11,6 +11,7 @@ from app.auth.dependencies import get_current_user, get_db
 from app.auth.models import User
 from app.energy.services import energy_service
 
+
 router = APIRouter(prefix="/api/alerts", tags=["alerts"])
 
 

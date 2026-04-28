@@ -6,6 +6,7 @@ from app.auth.models import User
 from app.forecasting.schemas.forecast_schema import ForecastResponse
 from app.forecasting.services import forecast_service
 
+
 router = APIRouter(prefix="/api/forecasting", tags=["forecasting"])
 
 

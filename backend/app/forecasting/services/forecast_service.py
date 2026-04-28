@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.energy.models import EnergyData
 
+
 HISTORY_WINDOW_DAYS = 90
 
 

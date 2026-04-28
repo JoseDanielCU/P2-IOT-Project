@@ -6,6 +6,7 @@ from app.alerts.schemas.alert_schema import (
     TriggeredAlert,
 )
 
+
 __all__ = [
     "AlertConfigCreate",
     "AlertConfigResponse",

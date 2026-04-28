@@ -6,7 +6,7 @@ from sqlalchemy.sql import func
 from app.core.database import Base
 
 
-class AlertType(str, enum.Enum):
+class AlertType(enum.StrEnum):
     """Tipos de umbral que un usuario puede configurar."""
 
     production_high = "production_high"    # producción supera el umbral
