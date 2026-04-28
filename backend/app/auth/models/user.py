@@ -48,7 +48,9 @@ class User(Base):
 
     # Información energética
     installed_capacity_kwh = Column(Float, nullable=True)
-    energy_source_type = Column(Enum(EnergySourceType, native_enum=False), nullable=True)
+    energy_source_type = Column(
+        Enum(EnergySourceType, native_enum=False), nullable=True
+    )
     average_monthly_consumption_kwh = Column(Float, nullable=True)
 
     # Campos del sistema
