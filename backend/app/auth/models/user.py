@@ -37,18 +37,18 @@ class User(Base):
     phone_number = Column(String, nullable=True)
 
     # Información de hogar/empresa
-    user_type = Column(Enum(UserType), nullable=False)
+    user_type = Column(Enum(UserType, native_enum=False), nullable=False)
     household_name = Column(String, nullable=False)
     address = Column(String, nullable=False)
     city = Column(String, nullable=False)
     postal_code = Column(String, nullable=False)
 
     # Rol en la comunidad energética
-    primary_role = Column(Enum(PrimaryRole), nullable=False)
+    primary_role = Column(Enum(PrimaryRole, native_enum=False), nullable=False)
 
     # Información energética
     installed_capacity_kwh = Column(Float, nullable=True)
-    energy_source_type = Column(Enum(EnergySourceType), nullable=True)
+    energy_source_type = Column(Enum(EnergySourceType, native_enum=False), nullable=True)
     average_monthly_consumption_kwh = Column(Float, nullable=True)
 
     # Campos del sistema
