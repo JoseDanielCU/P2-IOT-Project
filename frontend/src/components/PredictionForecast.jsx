@@ -36,7 +36,7 @@ function PredictionForecast({ currentUser }) {
                 );
 
                 setForecastData(response);
-                
+
                 // Combinar datos históricos y predicciones para el gráfico
                 const chartData = [];
 
@@ -55,7 +55,7 @@ function PredictionForecast({ currentUser }) {
                 }
 
                 if (response.predictions) {
-                    response.predictions.forEach((point) => {
+                    response.predictions.forEach(point => {
                         chartData.push({
                             timestamp: point.timestamp,
                             consumed: null,
@@ -103,10 +103,12 @@ function PredictionForecast({ currentUser }) {
                     ) : (
                         <>
                             <p className="text-blue-400">
-                                Consumo Predicho: {data.predictedConsumed?.toFixed(2)} kWh
+                                Consumo Predicho: {data.predictedConsumed?.toFixed(2)}{' '}
+                                kWh
                             </p>
                             <p className="text-green-400">
-                                Producción Predicha: {data.predictedProduced?.toFixed(2)} kWh
+                                Producción Predicha:{' '}
+                                {data.predictedProduced?.toFixed(2)} kWh
                             </p>
                             <p className="text-xs text-gray-500 font-bold mt-1">
                                 [PREDICCIÓN]
@@ -160,9 +162,7 @@ function PredictionForecast({ currentUser }) {
                         </label>
                         <select
                             value={historicalDays}
-                            onChange={(e) =>
-                                setHistoricalDays(parseInt(e.target.value))
-                            }
+                            onChange={e => setHistoricalDays(parseInt(e.target.value))}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             <option value={7}>Última semana (7 días)</option>
@@ -176,9 +176,7 @@ function PredictionForecast({ currentUser }) {
                         </label>
                         <select
                             value={forecastDays}
-                            onChange={(e) =>
-                                setForecastDays(parseInt(e.target.value))
-                            }
+                            onChange={e => setForecastDays(parseInt(e.target.value))}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             <option value={7}>Próxima semana (7 días)</option>
@@ -202,7 +200,13 @@ function PredictionForecast({ currentUser }) {
                                 textAnchor="end"
                                 height={80}
                             />
-                            <YAxis label={{ value: 'kWh', angle: -90, position: 'insideLeft' }} />
+                            <YAxis
+                                label={{
+                                    value: 'kWh',
+                                    angle: -90,
+                                    position: 'insideLeft',
+                                }}
+                            />
                             <Tooltip content={<CustomTooltip />} />
                             <Legend />
 
@@ -258,10 +262,20 @@ function PredictionForecast({ currentUser }) {
                             = Datos reales
                         </p>
                         <p>
-                            <span className="inline-block w-8 h-1 bg-blue-400 mr-2"
-                                  style={{ backgroundImage: 'repeating-linear-gradient(to right, #60a5fa 0px, #60a5fa 2px, transparent 2px, transparent 5px)' }}></span>
-                            <span className="inline-block w-8 h-1 mr-4"
-                                  style={{ backgroundImage: 'repeating-linear-gradient(to right, #86efac 0px, #86efac 2px, transparent 2px, transparent 5px)' }}></span>
+                            <span
+                                className="inline-block w-8 h-1 bg-blue-400 mr-2"
+                                style={{
+                                    backgroundImage:
+                                        'repeating-linear-gradient(to right, #60a5fa 0px, #60a5fa 2px, transparent 2px, transparent 5px)',
+                                }}
+                            ></span>
+                            <span
+                                className="inline-block w-8 h-1 mr-4"
+                                style={{
+                                    backgroundImage:
+                                        'repeating-linear-gradient(to right, #86efac 0px, #86efac 2px, transparent 2px, transparent 5px)',
+                                }}
+                            ></span>
                             = Datos predichos
                         </p>
                     </div>
@@ -272,29 +286,42 @@ function PredictionForecast({ currentUser }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                             <h4 className="font-semibold text-blue-900 mb-3">
-                                📈 Período Histórico ({forecastData.metrics.historical_period_days} días)
+                                📈 Período Histórico (
+                                {forecastData.metrics.historical_period_days} días)
                             </h4>
                             <div className="space-y-2 text-sm">
                                 <p className="text-gray-700">
                                     Producción total:{' '}
                                     <span className="font-semibold text-green-600">
-                                        {forecastData.metrics.historical_total_produced_kwh?.toFixed(2)} kWh
+                                        {forecastData.metrics.historical_total_produced_kwh?.toFixed(
+                                            2
+                                        )}{' '}
+                                        kWh
                                     </span>
                                 </p>
                                 <p className="text-gray-700">
                                     Consumo total:{' '}
                                     <span className="font-semibold text-blue-600">
-                                        {forecastData.metrics.historical_total_consumed_kwh?.toFixed(2)} kWh
+                                        {forecastData.metrics.historical_total_consumed_kwh?.toFixed(
+                                            2
+                                        )}{' '}
+                                        kWh
                                     </span>
                                 </p>
                                 <p className="text-gray-700">
                                     Balance neto:{' '}
-                                    <span className={`font-semibold ${
-                                        forecastData.metrics.historical_net_balance_kwh >= 0
-                                            ? 'text-green-600'
-                                            : 'text-red-600'
-                                    }`}>
-                                        {forecastData.metrics.historical_net_balance_kwh?.toFixed(2)} kWh
+                                    <span
+                                        className={`font-semibold ${
+                                            forecastData.metrics
+                                                .historical_net_balance_kwh >= 0
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
+                                        }`}
+                                    >
+                                        {forecastData.metrics.historical_net_balance_kwh?.toFixed(
+                                            2
+                                        )}{' '}
+                                        kWh
                                     </span>
                                 </p>
                             </div>
@@ -302,29 +329,42 @@ function PredictionForecast({ currentUser }) {
 
                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                             <h4 className="font-semibold text-yellow-900 mb-3">
-                                🔮 Período Predicho ({forecastData.metrics.forecast_period_days} días)
+                                🔮 Período Predicho (
+                                {forecastData.metrics.forecast_period_days} días)
                             </h4>
                             <div className="space-y-2 text-sm">
                                 <p className="text-gray-700">
                                     Producción estimada:{' '}
                                     <span className="font-semibold text-green-400">
-                                        {forecastData.metrics.predicted_total_produced_kwh?.toFixed(2)} kWh
+                                        {forecastData.metrics.predicted_total_produced_kwh?.toFixed(
+                                            2
+                                        )}{' '}
+                                        kWh
                                     </span>
                                 </p>
                                 <p className="text-gray-700">
                                     Consumo estimado:{' '}
                                     <span className="font-semibold text-blue-400">
-                                        {forecastData.metrics.predicted_total_consumed_kwh?.toFixed(2)} kWh
+                                        {forecastData.metrics.predicted_total_consumed_kwh?.toFixed(
+                                            2
+                                        )}{' '}
+                                        kWh
                                     </span>
                                 </p>
                                 <p className="text-gray-700">
                                     Balance estimado:{' '}
-                                    <span className={`font-semibold ${
-                                        forecastData.metrics.predicted_net_balance_kwh >= 0
-                                            ? 'text-green-400'
-                                            : 'text-red-400'
-                                    }`}>
-                                        {forecastData.metrics.predicted_net_balance_kwh?.toFixed(2)} kWh
+                                    <span
+                                        className={`font-semibold ${
+                                            forecastData.metrics
+                                                .predicted_net_balance_kwh >= 0
+                                                ? 'text-green-400'
+                                                : 'text-red-400'
+                                        }`}
+                                    >
+                                        {forecastData.metrics.predicted_net_balance_kwh?.toFixed(
+                                            2
+                                        )}{' '}
+                                        kWh
                                     </span>
                                 </p>
                             </div>
@@ -334,10 +374,18 @@ function PredictionForecast({ currentUser }) {
 
                 {/* Información adicional */}
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-                    <p className="font-semibold mb-2">ℹ️ Información sobre predicciones:</p>
+                    <p className="font-semibold mb-2">
+                        ℹ️ Información sobre predicciones:
+                    </p>
                     <ul className="list-disc list-inside space-y-1">
-                        <li>Las predicciones son generadas por inteligencia artificial (GPT-4o)</li>
-                        <li>El modelo analiza patrones históricos de consumo y producción</li>
+                        <li>
+                            Las predicciones son generadas por inteligencia artificial
+                            (GPT-4o)
+                        </li>
+                        <li>
+                            El modelo analiza patrones históricos de consumo y
+                            producción
+                        </li>
                         <li>Las predicciones se actualizan automáticamente</li>
                         <li>Utiliza datos históricos recientes para mayor precisión</li>
                     </ul>

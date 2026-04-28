@@ -6,7 +6,6 @@ from app.auth.routers.user_router import router as user_router
 from app.core.config import CORS_CREDENTIALS, CORS_HEADERS, CORS_METHODS, CORS_ORIGINS
 from app.core.database import Base, engine
 from app.energy import router as energy_router
-from app.energy.models import EnergyData, EnergyPrediction  # Import models to register them
 
 
 Base.metadata.create_all(bind=engine)

@@ -1,9 +1,9 @@
+from app.energy.services import prediction_service
 from app.energy.services.energy_service import (
     create_energy_data,
     get_chart_data,
     get_daily_metrics,
 )
-from app.energy.services import prediction_service
 
 
 __all__ = [

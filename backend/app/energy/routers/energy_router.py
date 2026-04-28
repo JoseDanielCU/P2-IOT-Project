@@ -202,7 +202,6 @@ def get_detailed_forecast(
     - Datos históricos reales de los últimos N días
     - Predicciones para los próximos N días
     - Métricas comparativas entre período histórico y predicho
-    
     Útil para visualizar la diferencia entre datos reales y predichos.
     """
     try:

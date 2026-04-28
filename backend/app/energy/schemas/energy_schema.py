@@ -42,6 +42,7 @@ class ChartDataResponse(BaseModel):
 
 class PredictionDataPoint(BaseModel):
     """Punto de datos de predicción para visualización en gráficas"""
+
     timestamp: str
     predicted_consumed: float
     predicted_produced: float
@@ -50,6 +51,7 @@ class PredictionDataPoint(BaseModel):
 
 class PredictionResponse(BaseModel):
     """Respuesta con predicciones para los próximos días"""
+
     id: int
     user_id: int
     prediction_date: datetime.datetime
@@ -63,6 +65,7 @@ class PredictionResponse(BaseModel):
 
 class PredictionForecastResponse(BaseModel):
     """Respuesta con pronóstico completo (histórico + predicciones)"""
+
     historical_data: list[ChartDataPoint]  # Datos reales del pasado
     predictions: list[PredictionDataPoint]  # Predicciones futuras
     metrics: dict  # Métricas del período

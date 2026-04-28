@@ -4,8 +4,8 @@ from app.energy.schemas.energy_schema import (
     EnergyDataCreate,
     EnergyDataResponse,
     PredictionDataPoint,
-    PredictionResponse,
     PredictionForecastResponse,
+    PredictionResponse,
 )
 
 

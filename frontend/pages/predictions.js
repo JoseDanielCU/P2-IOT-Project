@@ -30,7 +30,8 @@ function PredictionsPage() {
                             🔮 Pronóstico de Consumo Energético
                         </h1>
                         <p className="text-slate-600 mt-2">
-                            Visualiza predicciones de tu consumo y producción futura para planificar mejor tu uso energético.
+                            Visualiza predicciones de tu consumo y producción futura
+                            para planificar mejor tu uso energético.
                         </p>
                     </div>
 

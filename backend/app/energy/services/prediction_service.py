@@ -4,7 +4,6 @@ Utiliza la API de OpenAI (GPT) para generar predicciones inteligentes.
 """
 
 import json
-import os
 from datetime import date, datetime, timedelta
 
 from openai import OpenAI
@@ -97,6 +96,7 @@ def _build_historical_summary(
 # Predicción con OpenAI
 # ---------------------------------------------------------------------------
 
+
 def _call_openai_for_predictions(
     historical_data: list[dict],
     forecast_days: int,
@@ -135,8 +135,8 @@ def _call_openai_for_predictions(
     )
 
     response = _openai_client.chat.completions.create(
-        model="gpt-4o-mini",          # Puedes cambiar a gpt-4o si necesitas mayor precisión
-        temperature=0.2,              # Baja temperatura → respuestas más deterministas
+        model="gpt-4o-mini",  # Puedes cambiar a gpt-4o si necesitas mayor precisión
+        temperature=0.2,  # Baja temperatura → respuestas más deterministas
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": system_prompt},
@@ -160,11 +160,17 @@ def _call_openai_for_predictions(
     # Normalizar y validar cada elemento
     result = []
     for item in items:
-        result.append({
-            "date": item["date"],
-            "predicted_consumed_kwh": max(0.0, float(item["predicted_consumed_kwh"])),
-            "predicted_produced_kwh": max(0.0, float(item["predicted_produced_kwh"])),
-        })
+        result.append(
+            {
+                "date": item["date"],
+                "predicted_consumed_kwh": max(
+                    0.0, float(item["predicted_consumed_kwh"])
+                ),
+                "predicted_produced_kwh": max(
+                    0.0, float(item["predicted_produced_kwh"])
+                ),
+            }
+        )
 
     # print("=== OPENAI RAW RESPONSE ===", raw)
     # print("=== OPENAI PARSED ITEMS ===", items)
@@ -215,6 +221,7 @@ def generate_predictions(
         }
         for p in openai_predictions
     ]
+
 
 def save_predictions(
     db: Session,
@@ -304,6 +311,7 @@ def get_predictions(
         .all()
     )
 
+
 def get_forecast_with_historical(
     db: Session,
     user_id: int,
@@ -369,7 +377,8 @@ def get_forecast_with_historical(
         "forecast_period_days": forecast_days,
         "predicted_total_produced_kwh": predicted_total_produced,
         "predicted_total_consumed_kwh": predicted_total_consumed,
-        "predicted_net_balance_kwh": predicted_total_produced - predicted_total_consumed,
+        "predicted_net_balance_kwh": predicted_total_produced
+        - predicted_total_consumed,
     }
 
     # print("=== HISTORICAL DATA ===", historical_data)
