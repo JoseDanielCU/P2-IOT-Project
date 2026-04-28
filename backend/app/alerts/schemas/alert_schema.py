@@ -13,6 +13,7 @@ class AlertConfigBase(BaseModel):
 
 class AlertConfigCreate(AlertConfigBase):
     """Schema para crear o actualizar una configuración de alerta."""
+
     pass
 
 

@@ -9,11 +9,11 @@ from app.core.database import Base
 class AlertType(enum.StrEnum):
     """Tipos de umbral que un usuario puede configurar."""
 
-    production_high = "production_high"    # producción supera el umbral
-    production_low = "production_low"      # producción cae bajo el umbral
+    production_high = "production_high"  # producción supera el umbral
+    production_low = "production_low"  # producción cae bajo el umbral
     consumption_high = "consumption_high"  # consumo supera el umbral
-    consumption_low = "consumption_low"    # consumo cae bajo el umbral
-    balance_low = "balance_low"            # balance neto cae bajo el umbral
+    consumption_low = "consumption_low"  # consumo cae bajo el umbral
+    balance_low = "balance_low"  # balance neto cae bajo el umbral
 
 
 class AlertConfiguration(Base):

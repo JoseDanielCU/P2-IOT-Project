@@ -47,9 +47,7 @@ def upsert_alert_configs(
     return get_user_alert_configs(db, user_id)
 
 
-def check_alerts(
-    db: Session, user_id: int, metrics: dict
-) -> list[TriggeredAlert]:
+def check_alerts(db: Session, user_id: int, metrics: dict) -> list[TriggeredAlert]:
     """Compara las métricas energéticas del día con los umbrales configurados.
 
     Devuelve la lista de alertas que superan (o no alcanzan) sus umbrales.
@@ -82,7 +80,9 @@ def check_alerts(
                     f"{cfg.threshold_kwh:.2f} kWh."
                 ),
             )
-        elif cfg.alert_type == AlertType.production_low and produced < cfg.threshold_kwh:
+        elif (
+            cfg.alert_type == AlertType.production_low and produced < cfg.threshold_kwh
+        ):
             alert = TriggeredAlert(
                 alert_type=cfg.alert_type,
                 threshold_kwh=cfg.threshold_kwh,
@@ -92,7 +92,10 @@ def check_alerts(
                     f"{cfg.threshold_kwh:.2f} kWh."
                 ),
             )
-        elif cfg.alert_type == AlertType.consumption_high and consumed > cfg.threshold_kwh:
+        elif (
+            cfg.alert_type == AlertType.consumption_high
+            and consumed > cfg.threshold_kwh
+        ):
             alert = TriggeredAlert(
                 alert_type=cfg.alert_type,
                 threshold_kwh=cfg.threshold_kwh,
@@ -102,7 +105,9 @@ def check_alerts(
                     f"{cfg.threshold_kwh:.2f} kWh."
                 ),
             )
-        elif cfg.alert_type == AlertType.consumption_low and consumed < cfg.threshold_kwh:
+        elif (
+            cfg.alert_type == AlertType.consumption_low and consumed < cfg.threshold_kwh
+        ):
             alert = TriggeredAlert(
                 alert_type=cfg.alert_type,
                 threshold_kwh=cfg.threshold_kwh,

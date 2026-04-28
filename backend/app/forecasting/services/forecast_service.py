@@ -32,7 +32,7 @@ def _linear_regression(values: list[float]) -> tuple[float, float]:
     sum_y = sum(values)
     sum_xy = sum(i * v for i, v in enumerate(values))
 
-    denominator = n * sum_x2 - sum_x ** 2
+    denominator = n * sum_x2 - sum_x**2
     if denominator == 0:
         return 0.0, sum_y / n
 
