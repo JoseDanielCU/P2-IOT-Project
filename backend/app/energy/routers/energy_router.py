@@ -10,8 +10,10 @@ from app.energy.schemas import (
     ChartDataResponse,
     DailyMetricsResponse,
     EnergyDataCreate,
+    PredictionForecastResponse,
+    PredictionResponse,
 )
-from app.energy.services import energy_service, file_parser
+from app.energy.services import energy_service, file_parser, prediction_service
 
 
 def get_db():
@@ -150,3 +152,66 @@ async def import_energy_data(
 
     count = energy_service.upsert_energy_data(db, current_user.id, records)
     return {"message": f"Se importaron {count} registros exitosamente.", "count": count}
+
+
+# Endpoints para predicciones
+@router.get("/predictions/forecast", response_model=list[PredictionResponse])
+def get_predictions_forecast(
+    days: int = Query(
+        7,
+        ge=1,
+        le=30,
+        description="Número de días a predecir (default: 7)",
+    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Obtiene predicciones de consumo y producción para los próximos días.
+    Las predicciones se basan en el histórico de datos del usuario.
+    """
+    try:
+        predictions = prediction_service.get_predictions(db, current_user.id, days)
+        return predictions
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al generar predicciones: {str(exc)}",
+        ) from exc
+
+
+@router.get("/predictions/detailed", response_model=PredictionForecastResponse)
+def get_detailed_forecast(
+    forecast_days: int = Query(
+        7,
+        ge=1,
+        le=30,
+        description="Número de días a predecir (default: 7)",
+    ),
+    historical_days: int = Query(
+        7,
+        ge=1,
+        le=90,
+        description="Número de días históricos a mostrar (default: 7)",
+    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Obtiene un pronóstico completo que incluye:
+    - Datos históricos reales de los últimos N días
+    - Predicciones para los próximos N días
+    - Métricas comparativas entre período histórico y predicho
+    
+    Útil para visualizar la diferencia entre datos reales y predichos.
+    """
+    try:
+        forecast = prediction_service.get_forecast_with_historical(
+            db, current_user.id, historical_days, forecast_days
+        )
+        return PredictionForecastResponse(**forecast)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al generar pronóstico: {str(exc)}",
+        ) from exc
