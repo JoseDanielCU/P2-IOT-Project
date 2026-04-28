@@ -32,12 +32,57 @@ function Navbar() {
                     >
                         Dashboard
                     </Link>
-                    <span className="text-sm font-medium text-slate-400 cursor-not-allowed">
+                    {/* HU-IA-05: Enlace a predicciones habilitado */}
+                    <Link
+                        href="/predicciones"
+                        className={`text-sm font-medium transition ${
+                            router.pathname === '/predicciones'
+                                ? 'text-cyan-500 border-b-2 border-cyan-500'
+                                : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
                         Predicciones
-                    </span>
+                    </Link>
+
+                    {/* HU-WEB-05: Enlace a historial de producción */}
+                    <Link
+                        href="/produccion"
+                        className={`text-sm font-medium transition ${
+                            router.pathname === '/produccion'
+                                ? 'text-cyan-500 border-b-2 border-cyan-500'
+                                : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        Producción
+                    </Link>
+
+                    {/* HU-WEB-04: Enlace a historial de consumo */}
+                    <Link
+                        href="/consumo"
+                        className={`text-sm font-medium transition ${
+                            router.pathname === '/consumo'
+                                ? 'text-cyan-500 border-b-2 border-cyan-500'
+                                : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        Consumo
+                    </Link>
+
                     <span className="text-sm font-medium text-slate-400 cursor-not-allowed">
                         Transacciones
                     </span>
+
+                    {/* HU-COM-07: Enlace a configuración de alertas personalizadas */}
+                    <Link
+                        href="/alertas"
+                        className={`text-sm font-medium transition ${
+                            router.pathname === '/alertas'
+                                ? 'text-cyan-500 border-b-2 border-cyan-500'
+                                : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        Alertas
+                    </Link>
 
                     <Link
                         href="/perfil"
