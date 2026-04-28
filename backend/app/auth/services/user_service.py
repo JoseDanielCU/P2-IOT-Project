@@ -11,7 +11,6 @@ def get_user_by_email(db: Session, email: str):
 
 def create_user(db: Session, user_data: UserCreate):
     hashed = hash_password(user_data.password)
-
     user = User(
         full_name=user_data.full_name,
         email=user_data.email,
