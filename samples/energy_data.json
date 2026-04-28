@@ -1,0 +1,9 @@
+[
+  { "fecha": "2026-03-13", "energia_producida": 8.20, "energia_consumida": 5.10 },
+  { "fecha": "2026-03-14", "energia_producida": 7.50, "energia_consumida": 6.30 },
+  { "fecha": "2026-03-15", "energia_producida": 9.10, "energia_consumida": 4.80 },
+  { "fecha": "2026-03-16", "energia_producida": 6.40, "energia_consumida": 7.20 },
+  { "fecha": "2026-03-17", "energia_producida": 10.30, "energia_consumida": 5.50 },
+  { "fecha": "2026-03-18", "energia_producida": 11.00, "energia_consumida": 6.10 },
+  { "fecha": "2026-03-19", "energia_producida": 9.75, "energia_consumida": 5.90 }
+]

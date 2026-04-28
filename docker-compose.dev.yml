@@ -1,0 +1,76 @@
+# Docker Compose for Development
+# Optimized for hot-reload and debugging
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: energy-community-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: energy_community
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - energy-network
+
+  # FastAPI Backend with Hot-Reload
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: energy-community-backend-dev
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:password@postgres:5432/energy_community
+      SECRET_KEY: dev-secret-key-not-for-production
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+    volumes:
+      - ./backend/app:/app/app  # Hot-reload: changes reflect immediately
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - energy-network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Next.js Frontend with Hot-Reload
+  frontend:
+    image: node:20-alpine
+    container_name: energy-community-frontend-dev
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NODE_ENV: development
+    volumes:
+      - ./frontend:/app  # Hot-reload: changes reflect immediately
+      - /app/node_modules  # Prevent overwriting node_modules
+      - /app/.next  # Prevent overwriting .next build
+    depends_on:
+      - backend
+    networks:
+      - energy-network
+    command: sh -c "npm install && npm run dev"
+
+volumes:
+  postgres_dev_data:
+    driver: local
+
+networks:
+  energy-network:
+    driver: bridge
