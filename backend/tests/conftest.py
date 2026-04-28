@@ -13,7 +13,6 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.database import Base
 
 
 # Set test database URL to SQLite BEFORE importing app modules
@@ -24,7 +23,7 @@ os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
-
+from app.core.database import Base  # noqa: E402
 
 @pytest.fixture(scope="function")
 def test_db():
