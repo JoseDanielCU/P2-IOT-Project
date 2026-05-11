@@ -35,3 +35,7 @@ Thumbs.db
 .docker/
 docker-compose.override.yml
 .idea/
+
+# pytest coverage
+htmlcov/
+.coverage

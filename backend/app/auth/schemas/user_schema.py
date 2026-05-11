@@ -1,25 +1,8 @@
 from datetime import datetime
-from enum import StrEnum
 
 from pydantic import BaseModel, EmailStr, Field
 
-
-class UserType(StrEnum):
-    household = "household"
-    company = "company"
-
-
-class PrimaryRole(StrEnum):
-    producer = "producer"
-    consumer = "consumer"
-    prosumer = "prosumer"
-
-
-class EnergySourceType(StrEnum):
-    solar = "solar"
-    wind = "wind"
-    battery = "battery"
-    other = "other"
+from app.auth.models.user import EnergySourceType, PrimaryRole, UserType
 
 
 class UserCreate(BaseModel):
