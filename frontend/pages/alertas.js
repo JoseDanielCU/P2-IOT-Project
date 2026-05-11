@@ -18,7 +18,8 @@ const ALERT_DESCRIPTIONS = {
     production_low: 'Se activa cuando la producción del día cae por debajo del umbral.',
     consumption_high: 'Se activa cuando el consumo del día supera el umbral.',
     consumption_low: 'Se activa cuando el consumo del día cae por debajo del umbral.',
-    balance_low: 'Se activa cuando el balance neto cae por debajo del umbral (puede ser negativo).',
+    balance_low:
+        'Se activa cuando el balance neto cae por debajo del umbral (puede ser negativo).',
 };
 
 // Valores por defecto cuando el usuario no ha configurado alertas aún
@@ -59,7 +60,8 @@ function AlertasPage() {
                         savedByType[def.alert_type]
                             ? {
                                   alert_type: savedByType[def.alert_type].alert_type,
-                                  threshold_kwh: savedByType[def.alert_type].threshold_kwh,
+                                  threshold_kwh:
+                                      savedByType[def.alert_type].threshold_kwh,
                                   is_enabled: savedByType[def.alert_type].is_enabled,
                               }
                             : def
@@ -90,7 +92,9 @@ function AlertasPage() {
     const handleThresholdChange = (alertType, value) => {
         setConfigs(prev =>
             prev.map(c =>
-                c.alert_type === alertType ? { ...c, threshold_kwh: parseFloat(value) || 0 } : c
+                c.alert_type === alertType
+                    ? { ...c, threshold_kwh: parseFloat(value) || 0 }
+                    : c
             )
         );
     };
@@ -111,7 +115,10 @@ function AlertasPage() {
                 method: 'PUT',
                 body: JSON.stringify({ configs }),
             });
-            setSaveFeedback({ type: 'success', message: 'Preferencias guardadas correctamente.' });
+            setSaveFeedback({
+                type: 'success',
+                message: 'Preferencias guardadas correctamente.',
+            });
             await refreshTriggered();
         } catch (err) {
             setSaveFeedback({ type: 'error', message: err.message });
@@ -130,7 +137,9 @@ function AlertasPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <div className="text-slate-600">Cargando configuración de alertas...</div>
+                <div className="text-slate-600">
+                    Cargando configuración de alertas...
+                </div>
             </div>
         );
     }
@@ -150,7 +159,8 @@ function AlertasPage() {
                             Configuración de alertas
                         </h1>
                         <p className="text-slate-500 text-sm mt-1">
-                            Define los umbrales energéticos para recibir solo las notificaciones relevantes.
+                            Define los umbrales energéticos para recibir solo las
+                            notificaciones relevantes.
                         </p>
                     </div>
 
@@ -162,7 +172,10 @@ function AlertasPage() {
                             </h2>
                             <ul className="space-y-2">
                                 {triggeredAlerts.map(alert => (
-                                    <li key={alert.alert_type} className="flex items-start gap-2 text-sm text-amber-700">
+                                    <li
+                                        key={alert.alert_type}
+                                        className="flex items-start gap-2 text-sm text-amber-700"
+                                    >
                                         <span className="mt-0.5">⚠️</span>
                                         <span>{alert.message}</span>
                                     </li>
@@ -183,7 +196,9 @@ function AlertasPage() {
                             <div
                                 key={config.alert_type}
                                 className={`bg-white rounded-2xl border p-5 shadow-sm transition ${
-                                    config.is_enabled ? 'border-cyan-200' : 'border-slate-200 opacity-70'
+                                    config.is_enabled
+                                        ? 'border-cyan-200'
+                                        : 'border-slate-200 opacity-70'
                                 }`}
                             >
                                 <div className="flex items-start justify-between gap-4">
@@ -199,14 +214,22 @@ function AlertasPage() {
                                     {/* Toggle activar/desactivar */}
                                     <button
                                         onClick={() => handleToggle(config.alert_type)}
-                                        aria-label={config.is_enabled ? 'Desactivar alerta' : 'Activar alerta'}
+                                        aria-label={
+                                            config.is_enabled
+                                                ? 'Desactivar alerta'
+                                                : 'Activar alerta'
+                                        }
                                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-                                            config.is_enabled ? 'bg-cyan-500' : 'bg-slate-300'
+                                            config.is_enabled
+                                                ? 'bg-cyan-500'
+                                                : 'bg-slate-300'
                                         }`}
                                     >
                                         <span
                                             className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition duration-200 ${
-                                                config.is_enabled ? 'translate-x-5' : 'translate-x-0'
+                                                config.is_enabled
+                                                    ? 'translate-x-5'
+                                                    : 'translate-x-0'
                                             }`}
                                         />
                                     </button>
@@ -226,10 +249,17 @@ function AlertasPage() {
                                             type="number"
                                             step="0.1"
                                             value={config.threshold_kwh}
-                                            onChange={e => handleThresholdChange(config.alert_type, e.target.value)}
+                                            onChange={e =>
+                                                handleThresholdChange(
+                                                    config.alert_type,
+                                                    e.target.value
+                                                )
+                                            }
                                             className="w-32 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                         />
-                                        <span className="text-sm text-slate-500">kWh</span>
+                                        <span className="text-sm text-slate-500">
+                                            kWh
+                                        </span>
                                     </div>
                                 )}
                             </div>

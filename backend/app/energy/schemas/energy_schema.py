@@ -38,3 +38,36 @@ class ChartDataResponse(BaseModel):
     chart_data: list[ChartDataPoint]
     user_role: str
     energy_source_type: str | None = None
+
+
+class PredictionDataPoint(BaseModel):
+    """Punto de datos de predicción para visualización en gráficas"""
+
+    timestamp: str
+    predicted_consumed: float
+    predicted_produced: float
+    is_prediction: bool = True  # Bandera para distinguir predicciones de datos reales
+
+
+class PredictionResponse(BaseModel):
+    """Respuesta con predicciones para los próximos días"""
+
+    id: int
+    user_id: int
+    prediction_date: datetime.datetime
+    predicted_consumption_kwh: float
+    predicted_production_kwh: float
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PredictionForecastResponse(BaseModel):
+    """Respuesta con pronóstico completo (histórico + predicciones)"""
+
+    historical_data: list[ChartDataPoint]  # Datos reales del pasado
+    predictions: list[PredictionDataPoint]  # Predicciones futuras
+    metrics: dict  # Métricas del período
+    forecast_period_days: int = 7
+    generation_date: datetime.datetime

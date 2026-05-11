@@ -3,6 +3,9 @@ from app.energy.schemas.energy_schema import (
     DailyMetricsResponse,
     EnergyDataCreate,
     EnergyDataResponse,
+    PredictionDataPoint,
+    PredictionForecastResponse,
+    PredictionResponse,
 )
 
 
@@ -11,4 +14,7 @@ __all__ = [
     "EnergyDataResponse",
     "DailyMetricsResponse",
     "ChartDataResponse",
+    "PredictionResponse",
+    "PredictionDataPoint",
+    "PredictionForecastResponse",
 ]

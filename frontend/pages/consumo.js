@@ -179,7 +179,9 @@ function ConsumoPage() {
                 <main className="max-w-7xl mx-auto px-6 py-8">
                     {error && (
                         <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm">
-                            <p className="font-semibold">Nota: Mostrando datos de ejemplo</p>
+                            <p className="font-semibold">
+                                Nota: Mostrando datos de ejemplo
+                            </p>
                             <p>{error}</p>
                         </div>
                     )}
@@ -191,7 +193,10 @@ function ConsumoPage() {
                                 <div>
                                     <p className="text-sm font-medium opacity-90">
                                         Energía Consumida{' '}
-                                        {getTimePeriodLabel(filterType, predefinedPeriod)}
+                                        {getTimePeriodLabel(
+                                            filterType,
+                                            predefinedPeriod
+                                        )}
                                     </p>
                                     <p className="text-4xl font-bold mt-2">
                                         {metrics.total_consumed_kwh.toFixed(1)}{' '}
@@ -199,7 +204,11 @@ function ConsumoPage() {
                                     </p>
                                 </div>
                                 <div className="bg-white/20 p-3 rounded-xl">
-                                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg
+                                        className="w-8 h-8"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
                                         <path
                                             fillRule="evenodd"
                                             d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
@@ -229,7 +238,13 @@ function ConsumoPage() {
                                                 : 'text-slate-400 hover:text-slate-600'
                                         }`}
                                     >
-                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <svg
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
                                             <polyline points="22 12 18 12 15 18 9 6 6 12 2 12" />
                                         </svg>
                                     </button>
@@ -242,21 +257,47 @@ function ConsumoPage() {
                                                 : 'text-slate-400 hover:text-slate-600'
                                         }`}
                                     >
-                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                            <rect x="2" y="10" width="4" height="12" rx="1" />
-                                            <rect x="10" y="6" width="4" height="16" rx="1" />
-                                            <rect x="18" y="3" width="4" height="19" rx="1" />
+                                        <svg
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                        >
+                                            <rect
+                                                x="2"
+                                                y="10"
+                                                width="4"
+                                                height="12"
+                                                rx="1"
+                                            />
+                                            <rect
+                                                x="10"
+                                                y="6"
+                                                width="4"
+                                                height="16"
+                                                rx="1"
+                                            />
+                                            <rect
+                                                x="18"
+                                                y="3"
+                                                width="4"
+                                                height="19"
+                                                rx="1"
+                                            />
                                         </svg>
                                     </button>
                                 </div>
 
                                 {/* Filter type selector */}
                                 <div className="flex items-center gap-2">
-                                    <label className="text-sm text-slate-600">Filtro:</label>
+                                    <label className="text-sm text-slate-600">
+                                        Filtro:
+                                    </label>
                                     <select
                                         className="px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                         value={filterType}
-                                        onChange={e => handleFilterTypeChange(e.target.value)}
+                                        onChange={e =>
+                                            handleFilterTypeChange(e.target.value)
+                                        }
                                     >
                                         <option value="predefined">Predefinido</option>
                                         <option value="custom">Personalizado</option>
@@ -267,7 +308,11 @@ function ConsumoPage() {
                                     <select
                                         className="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                         value={predefinedPeriod}
-                                        onChange={e => handlePredefinedChange(parseInt(e.target.value))}
+                                        onChange={e =>
+                                            handlePredefinedChange(
+                                                parseInt(e.target.value)
+                                            )
+                                        }
                                     >
                                         <option value={7}>Últimos 7 Días</option>
                                         <option value={14}>Últimos 14 Días</option>
@@ -298,25 +343,64 @@ function ConsumoPage() {
                             <div className="w-full h-80 bg-slate-50 rounded-xl p-4">
                                 <ResponsiveContainer width="100%" height="100%">
                                     {chartType === 'bar' ? (
-                                        <BarChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                        <BarChart
+                                            data={chartData}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 5,
+                                            }}
+                                        >
+                                            <CartesianGrid
+                                                strokeDasharray="3 3"
+                                                stroke="#e2e8f0"
+                                            />
                                             <XAxis dataKey="date" stroke="#64748b" />
                                             <YAxis stroke="#64748b" />
                                             <Tooltip
-                                                contentStyle={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}
-                                                formatter={value => `${value.toFixed(2)} kWh`}
+                                                contentStyle={{
+                                                    backgroundColor: '#f8fafc',
+                                                    border: '1px solid #e2e8f0',
+                                                    borderRadius: '8px',
+                                                }}
+                                                formatter={value =>
+                                                    `${value.toFixed(2)} kWh`
+                                                }
                                             />
                                             <Legend />
-                                            <Bar dataKey="consumed" fill="#06b6d4" name="Consumo" radius={[4, 4, 0, 0]} />
+                                            <Bar
+                                                dataKey="consumed"
+                                                fill="#06b6d4"
+                                                name="Consumo"
+                                                radius={[4, 4, 0, 0]}
+                                            />
                                         </BarChart>
                                     ) : (
-                                        <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                        <LineChart
+                                            data={chartData}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 5,
+                                            }}
+                                        >
+                                            <CartesianGrid
+                                                strokeDasharray="3 3"
+                                                stroke="#e2e8f0"
+                                            />
                                             <XAxis dataKey="date" stroke="#64748b" />
                                             <YAxis stroke="#64748b" />
                                             <Tooltip
-                                                contentStyle={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}
-                                                formatter={value => `${value.toFixed(2)} kWh`}
+                                                contentStyle={{
+                                                    backgroundColor: '#f8fafc',
+                                                    border: '1px solid #e2e8f0',
+                                                    borderRadius: '8px',
+                                                }}
+                                                formatter={value =>
+                                                    `${value.toFixed(2)} kWh`
+                                                }
                                             />
                                             <Legend />
                                             <Line
@@ -335,7 +419,8 @@ function ConsumoPage() {
                         ) : (
                             <div className="h-80 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200">
                                 <p className="text-slate-400 text-sm">
-                                    No hay datos de consumo disponibles para el período seleccionado.
+                                    No hay datos de consumo disponibles para el período
+                                    seleccionado.
                                 </p>
                             </div>
                         )}
