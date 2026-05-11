@@ -16,7 +16,7 @@ import { apiRequest } from '../src/services/api';
 
 // Opciones de horizonte disponibles para el selector (HU-IA-05)
 const HORIZON_OPTIONS = [
-    { value: 7,  label: 'Próximos 7 días' },
+    { value: 7, label: 'Próximos 7 días' },
     { value: 14, label: 'Próximos 14 días' },
     { value: 30, label: 'Próximos 30 días' },
 ];
@@ -45,7 +45,7 @@ function PrediccionesPage() {
     }, [router]);
 
     // Consulta el endpoint de predicción
-    const fetchForecast = useCallback(async (selectedHorizon) => {
+    const fetchForecast = useCallback(async selectedHorizon => {
         setIsLoading(true);
         setError(null);
         try {
@@ -72,7 +72,7 @@ function PrediccionesPage() {
         fetchForecast(horizon);
     }, [horizon, fetchForecast]);
 
-    const handleHorizonChange = (e) => {
+    const handleHorizonChange = e => {
         setHorizon(parseInt(e.target.value, 10));
     };
 
@@ -145,10 +145,22 @@ function PrediccionesPage() {
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart
                                         data={forecastData}
-                                        margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                                        margin={{
+                                            top: 5,
+                                            right: 30,
+                                            left: 0,
+                                            bottom: 5,
+                                        }}
                                     >
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                                        <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 11 }} />
+                                        <CartesianGrid
+                                            strokeDasharray="3 3"
+                                            stroke="#e2e8f0"
+                                        />
+                                        <XAxis
+                                            dataKey="date"
+                                            stroke="#64748b"
+                                            tick={{ fontSize: 11 }}
+                                        />
                                         <YAxis stroke="#64748b" />
                                         <Tooltip
                                             contentStyle={{
@@ -156,35 +168,43 @@ function PrediccionesPage() {
                                                 border: '1px solid #e2e8f0',
                                                 borderRadius: '8px',
                                             }}
-                                            formatter={value => `${value.toFixed(2)} kWh`}
+                                            formatter={value =>
+                                                `${value.toFixed(2)} kWh`
+                                            }
                                         />
                                         <Legend />
 
-                                        {isMounted && (userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
-                                            <Line
-                                                type="monotone"
-                                                dataKey="produced"
-                                                stroke="#84cc16"
-                                                strokeWidth={2}
-                                                strokeDasharray="5 5"
-                                                dot={{ fill: '#84cc16', r: 3 }}
-                                                activeDot={{ r: 5 }}
-                                                name="Producción predicha"
-                                            />
-                                        )}
+                                        {isMounted &&
+                                            (userRole === 'producer' ||
+                                                userRole === 'prosumer' ||
+                                                !userRole) && (
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="produced"
+                                                    stroke="#84cc16"
+                                                    strokeWidth={2}
+                                                    strokeDasharray="5 5"
+                                                    dot={{ fill: '#84cc16', r: 3 }}
+                                                    activeDot={{ r: 5 }}
+                                                    name="Producción predicha"
+                                                />
+                                            )}
 
-                                        {isMounted && (userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
-                                            <Line
-                                                type="monotone"
-                                                dataKey="consumed"
-                                                stroke="#06b6d4"
-                                                strokeWidth={2}
-                                                strokeDasharray="5 5"
-                                                dot={{ fill: '#06b6d4', r: 3 }}
-                                                activeDot={{ r: 5 }}
-                                                name="Consumo predicho"
-                                            />
-                                        )}
+                                        {isMounted &&
+                                            (userRole === 'consumer' ||
+                                                userRole === 'prosumer' ||
+                                                !userRole) && (
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="consumed"
+                                                    stroke="#06b6d4"
+                                                    strokeWidth={2}
+                                                    strokeDasharray="5 5"
+                                                    dot={{ fill: '#06b6d4', r: 3 }}
+                                                    activeDot={{ r: 5 }}
+                                                    name="Consumo predicho"
+                                                />
+                                            )}
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
@@ -193,7 +213,8 @@ function PrediccionesPage() {
                         {!isLoading && !error && forecastData.length === 0 && (
                             <div className="h-80 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200">
                                 <p className="text-slate-400 text-sm text-center px-4">
-                                    No hay suficientes datos históricos para generar predicciones.
+                                    No hay suficientes datos históricos para generar
+                                    predicciones.
                                     <br />
                                     Importa registros de energía desde el Dashboard.
                                 </p>
@@ -202,8 +223,9 @@ function PrediccionesPage() {
 
                         {!isLoading && forecastData.length > 0 && (
                             <p className="mt-4 text-xs text-slate-400">
-                                Las predicciones se calculan mediante regresión lineal sobre
-                                los últimos 90 días de historial. Las líneas punteadas indican valores proyectados.
+                                Las predicciones se calculan mediante regresión lineal
+                                sobre los últimos 90 días de historial. Las líneas
+                                punteadas indican valores proyectados.
                             </p>
                         )}
                     </div>
@@ -220,33 +242,52 @@ function PrediccionesPage() {
                                 <table className="w-full text-sm">
                                     <thead className="bg-slate-50 text-slate-600">
                                         <tr>
-                                            <th className="px-6 py-3 text-left font-medium">Fecha</th>
-                                            {isMounted && (userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
-                                                <th className="px-6 py-3 text-right font-medium">
-                                                    Producción predicha (kWh)
-                                                </th>
-                                            )}
-                                            {isMounted && (userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
-                                                <th className="px-6 py-3 text-right font-medium">
-                                                    Consumo predicho (kWh)
-                                                </th>
-                                            )}
+                                            <th className="px-6 py-3 text-left font-medium">
+                                                Fecha
+                                            </th>
+                                            {isMounted &&
+                                                (userRole === 'producer' ||
+                                                    userRole === 'prosumer' ||
+                                                    !userRole) && (
+                                                    <th className="px-6 py-3 text-right font-medium">
+                                                        Producción predicha (kWh)
+                                                    </th>
+                                                )}
+                                            {isMounted &&
+                                                (userRole === 'consumer' ||
+                                                    userRole === 'prosumer' ||
+                                                    !userRole) && (
+                                                    <th className="px-6 py-3 text-right font-medium">
+                                                        Consumo predicho (kWh)
+                                                    </th>
+                                                )}
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
                                         {forecastData.map(point => (
-                                            <tr key={point.date} className="hover:bg-slate-50">
-                                                <td className="px-6 py-3 text-slate-700">{point.date}</td>
-                                                {isMounted && (userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
-                                                    <td className="px-6 py-3 text-right text-lime-600 font-medium">
-                                                        {point.produced.toFixed(3)}
-                                                    </td>
-                                                )}
-                                                {isMounted && (userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
-                                                    <td className="px-6 py-3 text-right text-cyan-600 font-medium">
-                                                        {point.consumed.toFixed(3)}
-                                                    </td>
-                                                )}
+                                            <tr
+                                                key={point.date}
+                                                className="hover:bg-slate-50"
+                                            >
+                                                <td className="px-6 py-3 text-slate-700">
+                                                    {point.date}
+                                                </td>
+                                                {isMounted &&
+                                                    (userRole === 'producer' ||
+                                                        userRole === 'prosumer' ||
+                                                        !userRole) && (
+                                                        <td className="px-6 py-3 text-right text-lime-600 font-medium">
+                                                            {point.produced.toFixed(3)}
+                                                        </td>
+                                                    )}
+                                                {isMounted &&
+                                                    (userRole === 'consumer' ||
+                                                        userRole === 'prosumer' ||
+                                                        !userRole) && (
+                                                        <td className="px-6 py-3 text-right text-cyan-600 font-medium">
+                                                            {point.consumed.toFixed(3)}
+                                                        </td>
+                                                    )}
                                             </tr>
                                         ))}
                                     </tbody>

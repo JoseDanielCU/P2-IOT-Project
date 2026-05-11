@@ -227,9 +227,27 @@ function ProduccionPage() {
                                             viewBox="0 0 24 24"
                                             fill="currentColor"
                                         >
-                                            <rect x="2" y="10" width="4" height="12" rx="1" />
-                                            <rect x="10" y="6" width="4" height="16" rx="1" />
-                                            <rect x="18" y="3" width="4" height="19" rx="1" />
+                                            <rect
+                                                x="2"
+                                                y="10"
+                                                width="4"
+                                                height="12"
+                                                rx="1"
+                                            />
+                                            <rect
+                                                x="10"
+                                                y="6"
+                                                width="4"
+                                                height="16"
+                                                rx="1"
+                                            />
+                                            <rect
+                                                x="18"
+                                                y="3"
+                                                width="4"
+                                                height="19"
+                                                rx="1"
+                                            />
                                         </svg>
                                     </button>
                                 </div>
@@ -253,9 +271,17 @@ function ProduccionPage() {
                                     {chartType === 'bar' ? (
                                         <BarChart
                                             data={chartData}
-                                            margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 5,
+                                            }}
                                         >
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                            <CartesianGrid
+                                                strokeDasharray="3 3"
+                                                stroke="#e2e8f0"
+                                            />
                                             <XAxis dataKey="date" stroke="#64748b" />
                                             <YAxis stroke="#64748b" />
                                             <Tooltip
@@ -264,7 +290,9 @@ function ProduccionPage() {
                                                     border: '1px solid #e2e8f0',
                                                     borderRadius: '8px',
                                                 }}
-                                                formatter={value => `${value.toFixed(2)} kWh`}
+                                                formatter={value =>
+                                                    `${value.toFixed(2)} kWh`
+                                                }
                                             />
                                             <Legend />
                                             <Bar
@@ -277,9 +305,17 @@ function ProduccionPage() {
                                     ) : (
                                         <LineChart
                                             data={chartData}
-                                            margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 5,
+                                            }}
                                         >
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                            <CartesianGrid
+                                                strokeDasharray="3 3"
+                                                stroke="#e2e8f0"
+                                            />
                                             <XAxis dataKey="date" stroke="#64748b" />
                                             <YAxis stroke="#64748b" />
                                             <Tooltip
@@ -288,7 +324,9 @@ function ProduccionPage() {
                                                     border: '1px solid #e2e8f0',
                                                     borderRadius: '8px',
                                                 }}
-                                                formatter={value => `${value.toFixed(2)} kWh`}
+                                                formatter={value =>
+                                                    `${value.toFixed(2)} kWh`
+                                                }
                                             />
                                             <Legend />
                                             <Line
@@ -307,7 +345,8 @@ function ProduccionPage() {
                         ) : (
                             <div className="h-80 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200">
                                 <p className="text-slate-400 text-sm">
-                                    No hay datos de producción disponibles para el período seleccionado.
+                                    No hay datos de producción disponibles para el
+                                    período seleccionado.
                                 </p>
                             </div>
                         )}

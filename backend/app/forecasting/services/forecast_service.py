@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import date, datetime, timedelta
 
-from openai import OpenAI, RateLimitError, APIError
+from openai import APIError, OpenAI, RateLimitError
 from sqlalchemy.orm import Session
 
 from app.core.config import OPENAI_API_KEY
@@ -109,7 +109,9 @@ def _call_openai_for_predictions(
     Retorna None si hay un error (para usar fallback a regresión lineal)
     """
     if not _openai_client:
-        logger.warning("OpenAI API key not configured, using linear regression fallback")
+        logger.warning(
+            "OpenAI API key not configured, using linear regression fallback"
+        )
         return None
 
     try:
@@ -186,9 +188,7 @@ def _call_openai_for_predictions(
         )
         return None
     except APIError as e:
-        logger.warning(
-            f"OpenAI API error: {str(e)}. Using linear regression fallback."
-        )
+        logger.warning(f"OpenAI API error: {str(e)}. Using linear regression fallback.")
         return None
     except Exception as e:
         logger.warning(
@@ -274,7 +274,9 @@ def get_forecast(db: Session, user_id: int, horizon_days: int) -> list[dict]:
     openai_predictions = _call_openai_for_predictions(historical_data, horizon_days)
 
     if openai_predictions:
-        logger.info(f"Successfully generated predictions using OpenAI for user {user_id}")
+        logger.info(
+            f"Successfully generated predictions using OpenAI for user {user_id}"
+        )
         return openai_predictions[:horizon_days]
 
     # Fallback: regresión lineal
