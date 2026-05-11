@@ -29,9 +29,11 @@ function PrediccionesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userRole, setUserRole] = useState(null);
+    const [isMounted, setIsMounted] = useState(false);
 
-    // Carga el rol del usuario una sola vez al montar
+    // Carga el rol del usuario una sola vez al montar (cliente)
     useEffect(() => {
+        setIsMounted(true);
         const token = localStorage.getItem('token');
         if (!token) {
             router.push('/login');
@@ -158,7 +160,7 @@ function PrediccionesPage() {
                                         />
                                         <Legend />
 
-                                        {(userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
+                                        {isMounted && (userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
                                             <Line
                                                 type="monotone"
                                                 dataKey="produced"
@@ -171,7 +173,7 @@ function PrediccionesPage() {
                                             />
                                         )}
 
-                                        {(userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
+                                        {isMounted && (userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
                                             <Line
                                                 type="monotone"
                                                 dataKey="consumed"
@@ -219,12 +221,12 @@ function PrediccionesPage() {
                                     <thead className="bg-slate-50 text-slate-600">
                                         <tr>
                                             <th className="px-6 py-3 text-left font-medium">Fecha</th>
-                                            {(userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
+                                            {isMounted && (userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
                                                 <th className="px-6 py-3 text-right font-medium">
                                                     Producción predicha (kWh)
                                                 </th>
                                             )}
-                                            {(userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
+                                            {isMounted && (userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
                                                 <th className="px-6 py-3 text-right font-medium">
                                                     Consumo predicho (kWh)
                                                 </th>
@@ -235,12 +237,12 @@ function PrediccionesPage() {
                                         {forecastData.map(point => (
                                             <tr key={point.date} className="hover:bg-slate-50">
                                                 <td className="px-6 py-3 text-slate-700">{point.date}</td>
-                                                {(userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
+                                                {isMounted && (userRole === 'producer' || userRole === 'prosumer' || !userRole) && (
                                                     <td className="px-6 py-3 text-right text-lime-600 font-medium">
                                                         {point.produced.toFixed(3)}
                                                     </td>
                                                 )}
-                                                {(userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
+                                                {isMounted && (userRole === 'consumer' || userRole === 'prosumer' || !userRole) && (
                                                     <td className="px-6 py-3 text-right text-cyan-600 font-medium">
                                                         {point.consumed.toFixed(3)}
                                                     </td>

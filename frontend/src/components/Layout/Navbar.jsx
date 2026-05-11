@@ -41,14 +41,6 @@ function Navbar() {
                                 : 'text-slate-600 hover:text-slate-900'
                         }`}
                     >
-                    <Link
-                        href="/predictions"
-                        className={`text-sm font-medium transition ${
-                            router.pathname === '/predictions'
-                                ? 'text-cyan-500 border-b-2 border-cyan-500'
-                                : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                    >
                         Predicciones
                     </Link>
 
@@ -76,7 +68,6 @@ function Navbar() {
                         Consumo
                     </Link>
 
-                    </Link>
                     <span className="text-sm font-medium text-slate-400 cursor-not-allowed">
                         Transacciones
                     </span>
