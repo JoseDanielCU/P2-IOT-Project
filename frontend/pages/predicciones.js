@@ -29,11 +29,9 @@ function PrediccionesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userRole, setUserRole] = useState(null);
-    const [isMounted, setIsMounted] = useState(false);
 
-    // Carga el rol del usuario una sola vez al montar (cliente)
+    // Carga el rol del usuario una sola vez al montar
     useEffect(() => {
-        setIsMounted(true);
         const token = localStorage.getItem('token');
         if (!token) {
             router.push('/login');
@@ -174,37 +172,35 @@ function PrediccionesPage() {
                                         />
                                         <Legend />
 
-                                        {isMounted &&
-                                            (userRole === 'producer' ||
-                                                userRole === 'prosumer' ||
-                                                !userRole) && (
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey="produced"
-                                                    stroke="#84cc16"
-                                                    strokeWidth={2}
-                                                    strokeDasharray="5 5"
-                                                    dot={{ fill: '#84cc16', r: 3 }}
-                                                    activeDot={{ r: 5 }}
-                                                    name="Producción predicha"
-                                                />
-                                            )}
+                                        {(userRole === 'producer' ||
+                                            userRole === 'prosumer' ||
+                                            !userRole) && (
+                                            <Line
+                                                type="monotone"
+                                                dataKey="produced"
+                                                stroke="#84cc16"
+                                                strokeWidth={2}
+                                                strokeDasharray="5 5"
+                                                dot={{ fill: '#84cc16', r: 3 }}
+                                                activeDot={{ r: 5 }}
+                                                name="Producción predicha"
+                                            />
+                                        )}
 
-                                        {isMounted &&
-                                            (userRole === 'consumer' ||
-                                                userRole === 'prosumer' ||
-                                                !userRole) && (
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey="consumed"
-                                                    stroke="#06b6d4"
-                                                    strokeWidth={2}
-                                                    strokeDasharray="5 5"
-                                                    dot={{ fill: '#06b6d4', r: 3 }}
-                                                    activeDot={{ r: 5 }}
-                                                    name="Consumo predicho"
-                                                />
-                                            )}
+                                        {(userRole === 'consumer' ||
+                                            userRole === 'prosumer' ||
+                                            !userRole) && (
+                                            <Line
+                                                type="monotone"
+                                                dataKey="consumed"
+                                                stroke="#06b6d4"
+                                                strokeWidth={2}
+                                                strokeDasharray="5 5"
+                                                dot={{ fill: '#06b6d4', r: 3 }}
+                                                activeDot={{ r: 5 }}
+                                                name="Consumo predicho"
+                                            />
+                                        )}
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
@@ -245,22 +241,20 @@ function PrediccionesPage() {
                                             <th className="px-6 py-3 text-left font-medium">
                                                 Fecha
                                             </th>
-                                            {isMounted &&
-                                                (userRole === 'producer' ||
-                                                    userRole === 'prosumer' ||
-                                                    !userRole) && (
-                                                    <th className="px-6 py-3 text-right font-medium">
-                                                        Producción predicha (kWh)
-                                                    </th>
-                                                )}
-                                            {isMounted &&
-                                                (userRole === 'consumer' ||
-                                                    userRole === 'prosumer' ||
-                                                    !userRole) && (
-                                                    <th className="px-6 py-3 text-right font-medium">
-                                                        Consumo predicho (kWh)
-                                                    </th>
-                                                )}
+                                            {(userRole === 'producer' ||
+                                                userRole === 'prosumer' ||
+                                                !userRole) && (
+                                                <th className="px-6 py-3 text-right font-medium">
+                                                    Producción predicha (kWh)
+                                                </th>
+                                            )}
+                                            {(userRole === 'consumer' ||
+                                                userRole === 'prosumer' ||
+                                                !userRole) && (
+                                                <th className="px-6 py-3 text-right font-medium">
+                                                    Consumo predicho (kWh)
+                                                </th>
+                                            )}
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
@@ -272,22 +266,20 @@ function PrediccionesPage() {
                                                 <td className="px-6 py-3 text-slate-700">
                                                     {point.date}
                                                 </td>
-                                                {isMounted &&
-                                                    (userRole === 'producer' ||
-                                                        userRole === 'prosumer' ||
-                                                        !userRole) && (
-                                                        <td className="px-6 py-3 text-right text-lime-600 font-medium">
-                                                            {point.produced.toFixed(3)}
-                                                        </td>
-                                                    )}
-                                                {isMounted &&
-                                                    (userRole === 'consumer' ||
-                                                        userRole === 'prosumer' ||
-                                                        !userRole) && (
-                                                        <td className="px-6 py-3 text-right text-cyan-600 font-medium">
-                                                            {point.consumed.toFixed(3)}
-                                                        </td>
-                                                    )}
+                                                {(userRole === 'producer' ||
+                                                    userRole === 'prosumer' ||
+                                                    !userRole) && (
+                                                    <td className="px-6 py-3 text-right text-lime-600 font-medium">
+                                                        {point.produced.toFixed(3)}
+                                                    </td>
+                                                )}
+                                                {(userRole === 'consumer' ||
+                                                    userRole === 'prosumer' ||
+                                                    !userRole) && (
+                                                    <td className="px-6 py-3 text-right text-cyan-600 font-medium">
+                                                        {point.consumed.toFixed(3)}
+                                                    </td>
+                                                )}
                                             </tr>
                                         ))}
                                     </tbody>
