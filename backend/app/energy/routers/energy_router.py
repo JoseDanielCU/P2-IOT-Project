@@ -1,8 +1,10 @@
+import logging
 from datetime import date
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
+from app.alerts.services.alert_service import check_alerts
 from app.auth.dependencies import get_current_user
 from app.auth.models import User
 from app.core.database import SessionLocal
@@ -24,21 +26,20 @@ def get_db():
         db.close()
 
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api/energy", tags=["Energy"])
 
 
-# Endpoint para gráficos comunitarios globales
 @router.get("/chart/global", response_model=list)
 def get_global_chart_data(
     days: int = Query(7, ge=1, le=90, description="Número de días para mostrar"),
     db: Session = Depends(get_db),
 ):
-    """Obtiene datos agregados para gráfica de producción vs consumo de la comunidad."""
     chart_data = energy_service.get_global_chart_data(db, days)
     return chart_data
 
 
-# Endpoint para métricas globales de la comunidad
 @router.get("/metrics/global", response_model=dict)
 def get_global_metrics(
     days: int = Query(
@@ -46,7 +47,6 @@ def get_global_metrics(
     ),
     db: Session = Depends(get_db),
 ):
-    """Obtiene métricas agregadas de toda la comunidad (promedios y totales)."""
     metrics = energy_service.get_global_metrics(db, days)
     return metrics
 
@@ -56,7 +56,6 @@ def get_today_metrics(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Obtiene los totales de energía del día actual"""
     metrics = energy_service.get_daily_metrics(db, current_user.id)
     metrics["user_role"] = current_user.primary_role.value
     return DailyMetricsResponse(**metrics)
@@ -68,7 +67,6 @@ def get_date_metrics(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Obtiene los totales de energía para una fecha específica"""
     metrics = energy_service.get_daily_metrics(db, current_user.id, target_date)
     metrics["user_role"] = current_user.primary_role.value
     return DailyMetricsResponse(**metrics)
@@ -80,10 +78,8 @@ def get_chart_data(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Obtiene datos para gráfica de producción vs consumo"""
     chart_data = energy_service.get_chart_data(db, current_user.id, days)
 
-    # Calcular métricas del período
     total_produced = sum(point["produced"] for point in chart_data)
     total_consumed = sum(point["consumed"] for point in chart_data)
     net_balance = total_produced - total_consumed
@@ -110,7 +106,6 @@ def create_energy_record(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Crea un nuevo registro de energía"""
     return energy_service.create_energy_data(db, current_user.id, energy_data)
 
 
@@ -120,7 +115,6 @@ async def import_energy_data(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Importa registros de energía desde un archivo CSV, XLSX, JSON o TXT."""
     filename = (file.filename or "").lower()
     raw = await file.read()
 
@@ -151,10 +145,19 @@ async def import_energy_data(
         )
 
     count = energy_service.upsert_energy_data(db, current_user.id, records)
+
+    # Verificar alertas automáticamente después de la importación
+    try:
+        metrics = energy_service.get_daily_metrics(db, current_user.id)
+        triggered = await check_alerts(db, current_user.id, metrics)
+        if triggered:
+            logger.info("%d alerta(s) disparada(s) tras importación", len(triggered))
+    except Exception as exc:
+        logger.error("Error al verificar alertas tras importación: %s", exc)
+
     return {"message": f"Se importaron {count} registros exitosamente.", "count": count}
 
 
-# Endpoints para predicciones
 @router.get("/predictions/forecast", response_model=list[PredictionResponse])
 def get_predictions_forecast(
     days: int = Query(
@@ -166,10 +169,6 @@ def get_predictions_forecast(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """
-    Obtiene predicciones de consumo y producción para los próximos días.
-    Las predicciones se basan en el histórico de datos del usuario.
-    """
     try:
         predictions = prediction_service.get_predictions(db, current_user.id, days)
         return predictions
@@ -197,13 +196,6 @@ def get_detailed_forecast(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """
-    Obtiene un pronóstico completo que incluye:
-    - Datos históricos reales de los últimos N días
-    - Predicciones para los próximos N días
-    - Métricas comparativas entre período histórico y predicho
-    Útil para visualizar la diferencia entre datos reales y predichos.
-    """
     try:
         forecast = prediction_service.get_forecast_with_historical(
             db, current_user.id, historical_days, forecast_days

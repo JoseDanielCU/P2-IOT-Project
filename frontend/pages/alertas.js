@@ -24,11 +24,36 @@ const ALERT_DESCRIPTIONS = {
 
 // Valores por defecto cuando el usuario no ha configurado alertas aún
 const DEFAULT_CONFIGS = [
-    { alert_type: 'production_high', threshold_kwh: 10, is_enabled: false },
-    { alert_type: 'production_low', threshold_kwh: 1, is_enabled: false },
-    { alert_type: 'consumption_high', threshold_kwh: 10, is_enabled: false },
-    { alert_type: 'consumption_low', threshold_kwh: 1, is_enabled: false },
-    { alert_type: 'balance_low', threshold_kwh: 0, is_enabled: false },
+    {
+        alert_type: 'production_high',
+        threshold_kwh: 10,
+        is_enabled: false,
+        notify_email: false,
+    },
+    {
+        alert_type: 'production_low',
+        threshold_kwh: 1,
+        is_enabled: false,
+        notify_email: false,
+    },
+    {
+        alert_type: 'consumption_high',
+        threshold_kwh: 10,
+        is_enabled: false,
+        notify_email: false,
+    },
+    {
+        alert_type: 'consumption_low',
+        threshold_kwh: 1,
+        is_enabled: false,
+        notify_email: false,
+    },
+    {
+        alert_type: 'balance_low',
+        threshold_kwh: 0,
+        is_enabled: false,
+        notify_email: false,
+    },
 ];
 
 function AlertasPage() {
@@ -42,6 +67,8 @@ function AlertasPage() {
     const [saveFeedback, setSaveFeedback] = useState(null);
 
     useEffect(() => {
+        let cancelled = false;
+
         const token = localStorage.getItem('token');
         if (!token) {
             router.push('/login');
@@ -52,6 +79,7 @@ function AlertasPage() {
             setIsLoading(true);
             try {
                 const saved = await apiRequest('/api/alerts/');
+                if (cancelled) return;
                 if (saved.length > 0) {
                     const savedByType = Object.fromEntries(
                         saved.map(c => [c.alert_type, c])
@@ -63,22 +91,28 @@ function AlertasPage() {
                                   threshold_kwh:
                                       savedByType[def.alert_type].threshold_kwh,
                                   is_enabled: savedByType[def.alert_type].is_enabled,
+                                  notify_email:
+                                      savedByType[def.alert_type].notify_email ?? false,
                               }
                             : def
                     );
+                    if (cancelled) return;
                     setConfigs(merged);
                 }
+                if (cancelled) return;
                 await refreshTriggered();
             } catch (err) {
                 console.error('Error al cargar alertas:', err);
             } finally {
-                setIsLoading(false);
+                if (!cancelled) setIsLoading(false);
             }
         };
 
         initialize();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [router]);
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const refreshTriggered = async () => {
         try {
@@ -103,6 +137,14 @@ function AlertasPage() {
         setConfigs(prev =>
             prev.map(c =>
                 c.alert_type === alertType ? { ...c, is_enabled: !c.is_enabled } : c
+            )
+        );
+    };
+
+    const handleToggleEmail = alertType => {
+        setConfigs(prev =>
+            prev.map(c =>
+                c.alert_type === alertType ? { ...c, notify_email: !c.notify_email } : c
             )
         );
     };
@@ -255,10 +297,44 @@ function AlertasPage() {
                                                     e.target.value
                                                 )
                                             }
-                                            className="w-32 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                            className="w-32 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                         />
                                         <span className="text-sm text-slate-500">
                                             kWh
+                                        </span>
+                                    </div>
+                                )}
+
+                                {/* Toggle notificar por correo */}
+                                {config.is_enabled && (
+                                    <div className="mt-3 flex items-center gap-2">
+                                        <button
+                                            onClick={() =>
+                                                handleToggleEmail(config.alert_type)
+                                            }
+                                            aria-label={
+                                                config.notify_email
+                                                    ? 'Desactivar notificación por correo'
+                                                    : 'Activar notificación por correo'
+                                            }
+                                            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
+                                                config.notify_email
+                                                    ? 'bg-cyan-500'
+                                                    : 'bg-slate-300'
+                                            }`}
+                                        >
+                                            <span
+                                                className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform transition duration-200 ${
+                                                    config.notify_email
+                                                        ? 'translate-x-4'
+                                                        : 'translate-x-0'
+                                                }`}
+                                            />
+                                        </button>
+                                        <span className="text-xs text-slate-500">
+                                            {config.notify_email
+                                                ? 'Notificar por correo'
+                                                : 'Sin notificación por correo'}
                                         </span>
                                     </div>
                                 )}

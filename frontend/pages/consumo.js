@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import {
     BarChart,
     Bar,
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -377,7 +377,7 @@ function ConsumoPage() {
                                             />
                                         </BarChart>
                                     ) : (
-                                        <LineChart
+                                        <AreaChart
                                             data={chartData}
                                             margin={{
                                                 top: 5,
@@ -386,6 +386,26 @@ function ConsumoPage() {
                                                 bottom: 5,
                                             }}
                                         >
+                                            <defs>
+                                                <linearGradient
+                                                    id="consGradCons"
+                                                    x1="0"
+                                                    y1="0"
+                                                    x2="0"
+                                                    y2="1"
+                                                >
+                                                    <stop
+                                                        offset="5%"
+                                                        stopColor="#06b6d4"
+                                                        stopOpacity={0.2}
+                                                    />
+                                                    <stop
+                                                        offset="95%"
+                                                        stopColor="#06b6d4"
+                                                        stopOpacity={0}
+                                                    />
+                                                </linearGradient>
+                                            </defs>
                                             <CartesianGrid
                                                 strokeDasharray="3 3"
                                                 stroke="#e2e8f0"
@@ -403,16 +423,17 @@ function ConsumoPage() {
                                                 }
                                             />
                                             <Legend />
-                                            <Line
+                                            <Area
                                                 type="monotone"
                                                 dataKey="consumed"
                                                 stroke="#06b6d4"
                                                 strokeWidth={2}
+                                                fill="url(#consGradCons)"
                                                 dot={{ fill: '#06b6d4', r: 4 }}
                                                 activeDot={{ r: 6 }}
                                                 name="Consumo"
                                             />
-                                        </LineChart>
+                                        </AreaChart>
                                     )}
                                 </ResponsiveContainer>
                             </div>

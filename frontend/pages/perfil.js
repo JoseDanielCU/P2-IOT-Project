@@ -84,7 +84,7 @@ export default function ProfilePage() {
             setEditMode(false);
         } else {
             const error = await res.json();
-            console.log(error);
+            console.error(error);
 
             setMessage('Error al actualizar perfil');
         }

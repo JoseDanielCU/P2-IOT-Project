@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import {
     BarChart,
     Bar,
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -54,8 +54,28 @@ function DashboardPage() {
     };
 
     const formatDate = dateStr => {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('es-CO', { month: '2-digit', day: '2-digit' });
+        const parts = dateStr.split('-');
+        return parts[2] + '/' + parts[1];
+    };
+
+    const ChartTooltip = ({ active, payload, label }) => {
+        if (!active || !payload?.length) return null;
+        return (
+            <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-sm min-w-[160px]">
+                <p className="font-semibold text-slate-700 mb-2">{formatDate(label)}</p>
+                {payload.map(entry => (
+                    <div
+                        key={entry.dataKey}
+                        className="flex justify-between gap-4 text-slate-600"
+                    >
+                        <span style={{ color: entry.color }}>{entry.name}</span>
+                        <span className="font-medium">
+                            {Number(entry.value).toFixed(2)} kWh
+                        </span>
+                    </div>
+                ))}
+            </div>
+        );
     };
 
     useEffect(() => {
@@ -427,16 +447,7 @@ function DashboardPage() {
                                                     tickFormatter={formatDate}
                                                 />
                                                 <YAxis stroke="#64748b" />
-                                                <Tooltip
-                                                    contentStyle={{
-                                                        backgroundColor: '#f8fafc',
-                                                        border: '1px solid #e2e8f0',
-                                                        borderRadius: '8px',
-                                                    }}
-                                                    formatter={value =>
-                                                        `${value.toFixed(2)} kWh`
-                                                    }
-                                                />
+                                                <Tooltip content={<ChartTooltip />} />
                                                 <Legend />
                                                 {(userRole === 'producer' ||
                                                     userRole === 'prosumer') && (
@@ -458,7 +469,7 @@ function DashboardPage() {
                                                 )}
                                             </BarChart>
                                         ) : (
-                                            <LineChart
+                                            <AreaChart
                                                 data={chartData}
                                                 margin={{
                                                     top: 5,
@@ -467,6 +478,44 @@ function DashboardPage() {
                                                     bottom: 5,
                                                 }}
                                             >
+                                                <defs>
+                                                    <linearGradient
+                                                        id="dashGradProd"
+                                                        x1="0"
+                                                        y1="0"
+                                                        x2="0"
+                                                        y2="1"
+                                                    >
+                                                        <stop
+                                                            offset="5%"
+                                                            stopColor="#84cc16"
+                                                            stopOpacity={0.2}
+                                                        />
+                                                        <stop
+                                                            offset="95%"
+                                                            stopColor="#84cc16"
+                                                            stopOpacity={0}
+                                                        />
+                                                    </linearGradient>
+                                                    <linearGradient
+                                                        id="dashGradCons"
+                                                        x1="0"
+                                                        y1="0"
+                                                        x2="0"
+                                                        y2="1"
+                                                    >
+                                                        <stop
+                                                            offset="5%"
+                                                            stopColor="#06b6d4"
+                                                            stopOpacity={0.2}
+                                                        />
+                                                        <stop
+                                                            offset="95%"
+                                                            stopColor="#06b6d4"
+                                                            stopOpacity={0}
+                                                        />
+                                                    </linearGradient>
+                                                </defs>
                                                 <CartesianGrid
                                                     strokeDasharray="3 3"
                                                     stroke="#e2e8f0"
@@ -477,24 +526,16 @@ function DashboardPage() {
                                                     tickFormatter={formatDate}
                                                 />
                                                 <YAxis stroke="#64748b" />
-                                                <Tooltip
-                                                    contentStyle={{
-                                                        backgroundColor: '#f8fafc',
-                                                        border: '1px solid #e2e8f0',
-                                                        borderRadius: '8px',
-                                                    }}
-                                                    formatter={value =>
-                                                        `${value.toFixed(2)} kWh`
-                                                    }
-                                                />
+                                                <Tooltip content={<ChartTooltip />} />
                                                 <Legend />
                                                 {(userRole === 'producer' ||
                                                     userRole === 'prosumer') && (
-                                                    <Line
+                                                    <Area
                                                         type="monotone"
                                                         dataKey="produced"
                                                         stroke="#84cc16"
                                                         strokeWidth={2}
+                                                        fill="url(#dashGradProd)"
                                                         dot={{ fill: '#84cc16', r: 4 }}
                                                         activeDot={{ r: 6 }}
                                                         name="Producción"
@@ -502,17 +543,18 @@ function DashboardPage() {
                                                 )}
                                                 {(userRole === 'consumer' ||
                                                     userRole === 'prosumer') && (
-                                                    <Line
+                                                    <Area
                                                         type="monotone"
                                                         dataKey="consumed"
                                                         stroke="#06b6d4"
                                                         strokeWidth={2}
+                                                        fill="url(#dashGradCons)"
                                                         dot={{ fill: '#06b6d4', r: 4 }}
                                                         activeDot={{ r: 6 }}
                                                         name="Consumo"
                                                     />
                                                 )}
-                                            </LineChart>
+                                            </AreaChart>
                                         )}
                                     </ResponsiveContainer>
                                 </div>

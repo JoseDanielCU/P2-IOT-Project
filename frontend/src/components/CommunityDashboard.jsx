@@ -19,9 +19,11 @@ import { apiRequest } from '../services/api';
 // ─── Tooltip: producción vs consumo ──────────────────────────────────────────
 const TrendTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
+    const parts = label.split('-');
+    const formatted = parts[2] + '/' + parts[1];
     return (
         <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-sm min-w-[160px]">
-            <p className="font-semibold text-slate-700 mb-2">{label}</p>
+            <p className="font-semibold text-slate-700 mb-2">{formatted}</p>
             {payload.map(entry => (
                 <div
                     key={entry.dataKey}
@@ -42,9 +44,11 @@ const BalanceTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     const val = payload[0]?.value ?? 0;
     const isSurplus = val >= 0;
+    const parts = label.split('-');
+    const formatted = parts[2] + '/' + parts[1];
     return (
         <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-sm min-w-[150px]">
-            <p className="font-semibold text-slate-700 mb-1">{label}</p>
+            <p className="font-semibold text-slate-700 mb-1">{formatted}</p>
             <div
                 className={`flex justify-between gap-4 font-semibold ${isSurplus ? 'text-lime-600' : 'text-orange-500'}`}
             >
@@ -167,8 +171,8 @@ export default function CommunityDashboard() {
     }, [days]);
 
     const formatDate = dateStr => {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('es-CO', { month: '2-digit', day: '2-digit' });
+        const parts = dateStr.split('-');
+        return parts[2] + '/' + parts[1];
     };
 
     const isNetSurplus = globalMetrics.net_balance_kwh >= 0;

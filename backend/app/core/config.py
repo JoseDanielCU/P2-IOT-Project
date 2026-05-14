@@ -33,3 +33,13 @@ ACCESS_TOKEN_EXPIRATION = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
+# Email (SMTP) Configuration
+MAIL_HOST = os.getenv("MAIL_HOST", "smtp.gmail.com")
+MAIL_PORT = int(os.getenv("MAIL_PORT", "587"))
+MAIL_USER = os.getenv("MAIL_USER", "")
+MAIL_PASS = os.getenv("MAIL_PASS", "")
+MAIL_FROM = os.getenv("MAIL_FROM", "noreply@energyhub.com")
+MAIL_FROM_NAME = os.getenv("MAIL_FROM_NAME", "EnergyHub")
+MAIL_TLS = os.getenv("MAIL_TLS", "True").lower() in ("true", "1", "yes")
+MAIL_SSL = os.getenv("MAIL_SSL", "False").lower() in ("true", "1", "yes")

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.alerts.models.alert_config import AlertType
 
@@ -9,6 +9,7 @@ class AlertConfigBase(BaseModel):
     alert_type: AlertType
     threshold_kwh: float = Field(..., description="Umbral en kWh")
     is_enabled: bool = True
+    notify_email: bool = False
 
 
 class AlertConfigCreate(AlertConfigBase):
@@ -25,8 +26,7 @@ class AlertConfigResponse(AlertConfigBase):
     created_at: datetime
     updated_at: datetime | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AlertConfigBulkUpdate(BaseModel):

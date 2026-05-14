@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import {
     BarChart,
     Bar,
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -303,7 +303,7 @@ function ProduccionPage() {
                                             />
                                         </BarChart>
                                     ) : (
-                                        <LineChart
+                                        <AreaChart
                                             data={chartData}
                                             margin={{
                                                 top: 5,
@@ -312,6 +312,26 @@ function ProduccionPage() {
                                                 bottom: 5,
                                             }}
                                         >
+                                            <defs>
+                                                <linearGradient
+                                                    id="prodGradProd"
+                                                    x1="0"
+                                                    y1="0"
+                                                    x2="0"
+                                                    y2="1"
+                                                >
+                                                    <stop
+                                                        offset="5%"
+                                                        stopColor="#84cc16"
+                                                        stopOpacity={0.2}
+                                                    />
+                                                    <stop
+                                                        offset="95%"
+                                                        stopColor="#84cc16"
+                                                        stopOpacity={0}
+                                                    />
+                                                </linearGradient>
+                                            </defs>
                                             <CartesianGrid
                                                 strokeDasharray="3 3"
                                                 stroke="#e2e8f0"
@@ -329,16 +349,17 @@ function ProduccionPage() {
                                                 }
                                             />
                                             <Legend />
-                                            <Line
+                                            <Area
                                                 type="monotone"
                                                 dataKey="produced"
                                                 stroke="#84cc16"
                                                 strokeWidth={2}
+                                                fill="url(#prodGradProd)"
                                                 dot={{ fill: '#84cc16', r: 4 }}
                                                 activeDot={{ r: 6 }}
                                                 name="Producción"
                                             />
-                                        </LineChart>
+                                        </AreaChart>
                                     )}
                                 </ResponsiveContainer>
                             </div>

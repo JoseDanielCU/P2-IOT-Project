@@ -111,7 +111,6 @@ def _call_openai_for_predictions(
     forecast_dates = [
         str(today + timedelta(days=i)) for i in range(1, forecast_days + 1)
     ]
-    # print("=== OPENAI API KEY ===", os.environ.get("OPENAI_API_KEY", "NO ENCONTRADA")[:10])
     # ... resto de la función
     system_prompt = (
         "Eres un modelo experto en series temporales de energía eléctrica. "
@@ -172,8 +171,6 @@ def _call_openai_for_predictions(
             }
         )
 
-    # print("=== OPENAI RAW RESPONSE ===", raw)
-    # print("=== OPENAI PARSED ITEMS ===", items)
     return result
 
 
@@ -381,9 +378,6 @@ def get_forecast_with_historical(
         - predicted_total_consumed,
     }
 
-    # print("=== HISTORICAL DATA ===", historical_data)
-    # print("=== PREDICTIONS ===", predictions)
-    # print("=== METRICS ===", metrics)
     return {
         "historical_data": historical_data,
         "predictions": predictions,

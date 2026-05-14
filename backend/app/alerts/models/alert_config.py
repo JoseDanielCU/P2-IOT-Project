@@ -31,5 +31,8 @@ class AlertConfiguration(Base):
     # El usuario puede activar o desactivar cada alerta individualmente
     is_enabled = Column(Boolean, nullable=False, default=True)
 
+    # El usuario puede optar por recibir notificaciones por correo
+    notify_email = Column(Boolean, nullable=False, default=False)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
