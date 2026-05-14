@@ -35,13 +35,13 @@ def save_alert_configs(
 
 
 @router.get("/check", response_model=AlertCheckResponse)
-def check_current_alerts(
+async def check_current_alerts(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Verifica las métricas del día actual contra los umbrales del usuario."""
     metrics = energy_service.get_daily_metrics(db, current_user.id)
-    triggered = alert_service.check_alerts(db, current_user.id, metrics)
+    triggered = await alert_service.check_alerts(db, current_user.id, metrics)
     return AlertCheckResponse(
         triggered_alerts=triggered,
         total_triggered=len(triggered),

@@ -1,11 +1,17 @@
+import logging
+
 from sqlalchemy.orm import Session
 
 from app.alerts.models.alert_config import AlertConfiguration, AlertType
 from app.alerts.schemas.alert_schema import AlertConfigCreate, TriggeredAlert
+from app.alerts.services.email_service import send_alert_email
+from app.auth.models.user import User
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_user_alert_configs(db: Session, user_id: int) -> list[AlertConfiguration]:
-    """Devuelve todas las configuraciones de alerta del usuario."""
     return (
         db.query(AlertConfiguration)
         .filter(AlertConfiguration.user_id == user_id)
@@ -17,11 +23,6 @@ def get_user_alert_configs(db: Session, user_id: int) -> list[AlertConfiguration
 def upsert_alert_configs(
     db: Session, user_id: int, configs: list[AlertConfigCreate]
 ) -> list[AlertConfiguration]:
-    """Crea o actualiza las configuraciones de alerta del usuario.
-
-    Si ya existe una configuración para ese tipo de alerta, la actualiza;
-    si no existe, la crea. Devuelve la lista de configuraciones resultante.
-    """
     existing_by_type: dict[AlertType, AlertConfiguration] = {
         cfg.alert_type: cfg
         for cfg in db.query(AlertConfiguration)
@@ -34,12 +35,14 @@ def upsert_alert_configs(
             record = existing_by_type[config_in.alert_type]
             record.threshold_kwh = config_in.threshold_kwh
             record.is_enabled = config_in.is_enabled
+            record.notify_email = config_in.notify_email
         else:
             record = AlertConfiguration(
                 user_id=user_id,
                 alert_type=config_in.alert_type,
                 threshold_kwh=config_in.threshold_kwh,
                 is_enabled=config_in.is_enabled,
+                notify_email=config_in.notify_email,
             )
             db.add(record)
 
@@ -47,19 +50,22 @@ def upsert_alert_configs(
     return get_user_alert_configs(db, user_id)
 
 
-def check_alerts(db: Session, user_id: int, metrics: dict) -> list[TriggeredAlert]:
-    """Compara las métricas energéticas del día con los umbrales configurados.
+async def check_alerts(
+    db: Session, user_id: int, metrics: dict
+) -> list[TriggeredAlert]:
+    from app.main import alert_manager
 
-    Devuelve la lista de alertas que superan (o no alcanzan) sus umbrales.
-    """
     configs = (
         db.query(AlertConfiguration)
         .filter(
             AlertConfiguration.user_id == user_id,
-            AlertConfiguration.is_enabled == True,  # noqa: E712
+            AlertConfiguration.is_enabled,
         )
         .all()
     )
+
+    user = db.query(User).filter(User.id == user_id).first()
+    user_email = user.email if user else None
 
     produced = metrics.get("total_produced_kwh", 0.0)
     consumed = metrics.get("total_consumed_kwh", 0.0)
@@ -130,5 +136,21 @@ def check_alerts(db: Session, user_id: int, metrics: dict) -> list[TriggeredAler
 
         if alert:
             triggered.append(alert)
+            logger.info(f"Enviando alerta por WebSocket: {alert.model_dump()}")
+            await alert_manager.send_alert(alert.model_dump())
+
+            if cfg.notify_email and user_email:
+                logger.info(
+                    "Enviando alerta por correo a %s: %s",
+                    user_email,
+                    cfg.alert_type,
+                )
+                await send_alert_email(
+                    recipient_email=user_email,
+                    alert_type=cfg.alert_type.value,
+                    message=alert.message,
+                    threshold_kwh=cfg.threshold_kwh,
+                    current_value_kwh=alert.current_value_kwh,
+                )
 
     return triggered

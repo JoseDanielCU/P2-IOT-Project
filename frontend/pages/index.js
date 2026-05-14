@@ -1,18 +1,87 @@
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
 function HomePage() {
+    const [showSplash, setShowSplash] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
+
+    useEffect(() => {
+        const fadeTimer = setTimeout(() => setFadeOut(true), 2000);
+        const hideTimer = setTimeout(() => setShowSplash(false), 2500);
+        return () => {
+            clearTimeout(fadeTimer);
+            clearTimeout(hideTimer);
+        };
+    }, []);
+
+    const particles = Array.from({ length: 6 }, (_, i) => ({
+        id: i,
+        left: `${15 + i * 14}%`,
+        top: `${30 + (i % 3) * 20}%`,
+        size: `${3 + (i % 3) * 2}px`,
+        delay: `${i * 0.6}s`,
+        duration: `${3.5 + (i % 2) * 1.5}s`,
+    }));
+
     return (
         <>
             <Head>
                 <title>EnergyHub | Comunidad Energética</title>
             </Head>
 
-            <div className="min-h-screen bg-slate-50">
+            {/* Splash Screen */}
+            {showSplash && (
+                <div
+                    className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 ${
+                        fadeOut ? 'animate-splash-out' : ''
+                    }`}
+                >
+                    {/* Particles */}
+                    {particles.map(p => (
+                        <div
+                            key={p.id}
+                            className="splash-particle"
+                            style={{
+                                left: p.left,
+                                top: p.top,
+                                width: p.size,
+                                height: p.size,
+                                animationDelay: p.delay,
+                                animationDuration: p.duration,
+                            }}
+                        />
+                    ))}
+
+                    {/* Glow circle */}
+                    <div className="relative mb-8">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400/20 to-cyan-500/20 blur-3xl scale-150 animate-splash-glow" />
+                        <div className="relative w-24 h-24 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg animate-splash-logo">
+                            <span className="text-white text-5xl">⚡</span>
+                        </div>
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="text-4xl font-bold text-white mb-2 animate-splash-text">
+                        <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                            EnergyHub
+                        </span>
+                    </h1>
+
+                    {/* Subtitle */}
+                    <p className="text-slate-400 text-lg font-light tracking-wide animate-splash-sub">
+                        Comunidad Energética
+                    </p>
+                </div>
+            )}
+
+            {/* Main Content */}
+            <div
+                className={`min-h-screen bg-slate-50 ${!showSplash ? 'animate-slide-up-in' : 'opacity-0'}`}
+            >
                 {/* Header */}
                 <header className="bg-white border-b border-slate-200 px-6 py-4">
                     <div className="max-w-7xl mx-auto flex items-center justify-between">
-                        {/* Logo */}
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center">
                                 <span className="text-white font-bold text-lg">⚡</span>

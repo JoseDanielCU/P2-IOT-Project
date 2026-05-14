@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EnergyDataCreate(BaseModel):
@@ -16,8 +16,7 @@ class EnergyDataResponse(BaseModel):
     energy_produced_kwh: float
     energy_consumed_kwh: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DailyMetricsResponse(BaseModel):
@@ -59,8 +58,7 @@ class PredictionResponse(BaseModel):
     predicted_production_kwh: float
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PredictionForecastResponse(BaseModel):

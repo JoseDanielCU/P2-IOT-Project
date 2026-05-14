@@ -32,14 +32,16 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    env_file:
+      - ./backend/.env
     environment:
       DATABASE_URL: postgresql+psycopg://postgres:password@postgres:5432/energy_community
       SECRET_KEY: dev-secret-key-not-for-production
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
-      OPENAI_API_KEY: ${OPENAI_API_KEY}  
     volumes:
       - ./backend/app:/app/app  # Hot-reload: changes reflect immediately
+      - ./backend/tests:/app/tests  # Tests for running pytest
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,6 +59,7 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_ALERTS_URL: ws://localhost:8000/ws/alerts
       NODE_ENV: development
     volumes:
       - ./frontend:/app  # Hot-reload: changes reflect immediately
